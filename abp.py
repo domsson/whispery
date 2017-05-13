@@ -25,7 +25,7 @@ def init_vlc():
     global volume
     vlc_instance = vlc.Instance("--aout=alsa")
     vlc_player = vlc_instance.media_player_new()
-    vlc_media = vlc_instance.media_new("test.mp3")
+    vlc_media = vlc_instance.media_new("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
     vlc_player.set_media(vlc_media)
     vlc_player.audio_set_volume(volume)
 
