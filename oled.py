@@ -56,22 +56,29 @@ draw = ImageDraw.Draw(image)
 #x += shape_width+padding
 
 # Load default font.
-font = ImageFont.load_default()
+#font = ImageFont.load_default()
 
 # Alternatively load a TTF font.  Make sure the .ttf font file is in the same directory as the python script!
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-#font = ImageFont.truetype('Minecraftia.ttf', 8)
+#font = ImageFont.truetype('cellphone_varwidth.ttf', 16)
+font = ImageFont.truetype('cellphone_6px.ttf', 16)
 
 # Write two lines of text.
 #draw.text((x, top),    'Hello',  font=font, fill=255)
 #draw.text((x, top+20), 'World!', font=font, fill=255)
 
-draw.line((0, 10, 128, 10), fill=255)
-draw.line((0, 54, 128, 54), fill=255)
+#draw.line((0, 10, 128, 10), fill=255)
+#draw.line((0, 54, 128, 54), fill=255)
 #draw.point((64,32), fill=255)
 
-draw.text((0, 0), "Audio Book Player", font=font, fill=255)
-draw.text((0, 54), "Menu", font=font, fill=255)
+draw.text((2, -4), "0123456789 !@#$%^&*()-=", font=font, fill=255)
+draw.text((2,  4), "abcdefghijklmnopqrstuvwxyz", font=font, fill=255)
+draw.text((2, 12), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", font=font, fill=255)
+draw.text((2, 20), "012345678901234567890123456789", font=font, fill=255)
+draw.text((2, 28), "Stephen King - The Dark Tower", font=font, fill=255)
+draw.text((2, 36), "GODDAMN HOW MANY LINES?", font=font, fill=255)
+draw.text((2, 44), "The seventh line already", font=font, fill=255)
+draw.text((2, 52), "Finally, the last line!", font=font, fill=255)
 
 # Display image.
 disp.image(image)
