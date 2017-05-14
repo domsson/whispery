@@ -2,10 +2,10 @@ class VLC():
 
     options = [
         "--aout=alsa",
-        "--novideo",
-        "--one-instance",
-        "--no-playlist-autostart",
-        "--playlist-enqueue"
+        #"--novideo",
+        #"--one-instance",
+        #"--no-playlist-autostart",
+        #"--playlist-enqueue"
     ]
 
     volume_def = 50
