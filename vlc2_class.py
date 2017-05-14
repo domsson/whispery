@@ -37,19 +37,19 @@ class VLC():
         #self.reset_media()  # release the media
 
         num_files = self.add(file)     # Add the file to the media_list
-		self.current = num_files - 1
+        self.current = num_files - 1
         self.init_media(self.current)  # Turn the file into media
         self.load_media()              # Load the media_list into the player
-		if self.player is None:
-			print("player is None")
-		if self.media is None:
-			print("media is None")
+        if self.player is None:
+            print("player is None")
+        if self.media is None:
+            print("media is None")
 
     # Add a media file to the media list
-	# Returns the number of files in the file list
+    # Returns the number of files in the file list
     def add(self, mrl):
         self.files.append(mrl)
-		return len(self.files)
+        return len(self.files)
 
     # Load a given list of files. Frees all currently loaded files.
     # After this operation, the first of the given files will be ready to play.
