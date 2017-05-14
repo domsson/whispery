@@ -1,3 +1,5 @@
+import vlc
+
 class VLC():
 
     options = [
@@ -16,7 +18,7 @@ class VLC():
         self.instance = vlc.Instance(" ".join(VLC.options))
         self.player = self.instance.media_list_player_new()
         self.media_list = self.instance.media_list_new()
-        self.player.get_media_player().audio_set_volume(VLC.volume_def))
+        self.player.get_media_player().audio_set_volume(VLC.volume_def)
         self.current = 0
 
     # Load a given file. Frees all currently loaded files.
