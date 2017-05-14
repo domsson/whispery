@@ -32,23 +32,26 @@ class VLC():
     # Load a given file. Frees all currently loaded files.
     # Return 1 on success, 0 on failure
     def load(self, file):
-        #self.files = []
-        #self.reset_player() # re-create the player
-        #self.reset_media()  # release the media
+        self.files = []
+        self.reset_player() # re-create the player
+        self.reset_media()  # release the media
+        self.current = -1
 
-        num_files = self.add(file)     # Add the file to the media_list
-        self.current = num_files - 1
-        self.init_media(self.current)  # Turn the file into media
-        self.load_media()              # Load the media_list into the player
-        if self.player is None:
-            print("player is None")
-        if self.media is None:
-            print("media is None")
+        self.add(file)      # Add the file to the media_list
+        self.init_media(0)  # Turn the file into media
+        self.load_media()   # Load the media into the player
 
     # Add a media file to the media list
     # Returns the number of files in the file list
     def add(self, mrl):
         self.files.append(mrl)
+        return len(self.files)
+
+    # Add all given media files to the media list
+    # Returns the number of files in the file list
+    def add_all(self, mrls):
+        for mrl in mrls:
+            self.files.append(mrl)
         return len(self.files)
 
     # Load a given list of files. Frees all currently loaded files.
@@ -61,14 +64,12 @@ class VLC():
         self.files = []
         self.reset_player()
         self.reset_media()
+        self.current = -1
 
-        num_files_loaded = 0
-        for file in self.files:
-            num_files_loaded += self.add(file)
-
+        num_files = self.add_all(files)
         self.init_media(0)
         self.load_media()
-        return num_files_loaded
+        return num_files
 
     # Return the number of loaded files
     def num_files(self):
@@ -85,7 +86,6 @@ class VLC():
             raise IndexError((self.__class__.__name__) + ".get_filename()")
 
         return self.files[index]
-
 
     # Return the name of the current or specified file's artist
     # This should be the author. If not set, return `None`
@@ -159,13 +159,14 @@ class VLC():
         return self.player.audio_get_volume()
 
     # Set the volume to the specified value [0..100]
-    # Return the new set volume
+    # Return the new volume
     def set_volume(self, volume):
         if volume < 0:
             volume = 0
         elif volume > 100:
             volume = 100
         self.player.audio_set_volume(volume)
+        return volume
 
     # Return the current position within the file, in seconds
     def get_position(self):
