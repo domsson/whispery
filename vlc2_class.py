@@ -192,7 +192,7 @@ class VLC():
 
     # Go to the beginning of the previous file (if multiple loaded)
     # Return the number of the new file or -1 if there is no previous.
-    def prev():
+    def prev(self):
         if self.current <= 0:
             return -1
 
@@ -206,7 +206,7 @@ class VLC():
 
     # Go to the beginning of the next file (if multiple loaded)
     # Return the number of the new file or -1 if there is no next.
-    def next():
+    def next(self):
         if self.current > self.num_files():
             return -1
 
@@ -219,15 +219,15 @@ class VLC():
         return self.current
 
     # Start/Resume the playback from the current position
-    def play():
+    def play(self):
         self.player.play() # TODO does this play from the start or cur pos?
 
     # Pause the playback and remember the current position
-    def pause():
+    def pause(self):
         self.player.pause()
 
     # Play or pause playback depening on current playback status
-    def toggle_playback():
+    def toggle_playback(self):
         if self.player.is_playing():
             self.pause()
         else:
