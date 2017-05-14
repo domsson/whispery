@@ -45,6 +45,8 @@ class VLC():
     # Returns the number of files in the file list
     def add(self, mrl):
         self.files.append(mrl)
+        if self.current == -1:
+            self.current = 0
         return len(self.files)
 
     # Add all given media files to the media list
@@ -52,13 +54,15 @@ class VLC():
     def add_all(self, mrls):
         for mrl in mrls:
             self.files.append(mrl)
+        if self.current == -1:
+            self.current = 0
         return len(self.files)
 
     # Load a given list of files. Frees all currently loaded files.
     # After this operation, the first of the given files will be ready to play.
     # Return the number of files loaded
     def load_all(self, files):        
-        if len(self.files) == 0:
+        if len(files) == 0:
             return 0
 
         self.files = []
@@ -204,9 +208,9 @@ class VLC():
             return -1
 
         was_playing = self.player.is_playing()
-        self.player.stop()
+        self.stop()
         self.current -= 1
-        init_media(self.current)
+        self.init_media(self.current)
         if was_playing:
             self.player.play()
         return self.current
@@ -218,9 +222,9 @@ class VLC():
             return -1
 
         was_playing = self.player.is_playing()
-        self.player.stop()
+        self.stop()
         self.current += 1
-        init_media(self.current)
+        self.init_media(self.current)
         if was_playing:
             self.player.play()
         return self.current

@@ -16,7 +16,15 @@ running = False
 def init_vlc():
     global vlc
     vlc = VLC()
-    vlc.load("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
+    files = [
+            "mp3/whisperingeye_01_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_02_fleming-roberts_64kb.mp3",
+            "mp3/whiserpingeye_03_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_04_fleming-roberts_64kb.mp3"
+    ]
+
+    #vlc.load("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
+    vlc.load_all(files)
 
 def signal_handler(signal, frame):
     global running
@@ -29,7 +37,13 @@ def cleanup():
 
 def btn1_action(pin, event):
     global vlc
-    
+    if vlc.prev():
+        print("prev")
+    else:
+        print("n/a")
+
+def btn2_action(pin, event):
+    global vlc
     if vlc.is_playing():
         vlc.pause()
         print("pausing")
@@ -37,13 +51,12 @@ def btn1_action(pin, event):
         vlc.play()
         print("playing...")
 
-def btn2_action(pin, event):
-    global vlc
-    print("volume: " + str(vlc.set_volume(vlc.get_volume() - 10)))
-
 def btn3_action(pin, event):
     global vlc
-    print("volume: " + str(vlc.set_volume(vlc.get_volume() + 10)))
+    if vlc.next():
+        print("next")
+    else:
+        print("n/a")
 
 def btn4_action(pin, event):
     print("btn 4, pin " + str(pin))
@@ -51,7 +64,7 @@ def btn4_action(pin, event):
 def btn5_action(pin, event):
     global vlc
     vlc.stop()
-    print("btn 5, pin " + str(pin))
+    print("stopped.")
 
 def rot1_action(event):
     global vlc
@@ -64,9 +77,9 @@ def rot1_action(event):
 
 def rot2_action(event):
     if event == RotaryEncoder.CW:
-        print("rot2 cw")
+        print("pos: " + str(vlc.seek(30)))
     elif event == RotaryEncoder.CCW:
-        print("rot2 ccw")
+        print("pos: " + str(vlc.seek(30)))
     else:
         print("rot2 x")
 
