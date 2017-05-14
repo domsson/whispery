@@ -27,7 +27,7 @@ class VLC():
     def init_media(self, index):
         if index < 0 or index >= len(self.files):
             raise IndexError((self.__class__.__name__) + ".get_filename()")
-        media = self.instance.media_new(self.files[index])
+        self.media = self.instance.media_new(self.files[index])
 
     # Load a given file. Frees all currently loaded files.
     # Return 1 on success, 0 on failure
