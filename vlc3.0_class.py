@@ -63,7 +63,7 @@ class VLC():
     def get_filename(self, index=-1):
         if index == -1:
             index = self.current
-        if index >= self.num_files():
+        if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_filename()")
 
         return self.media_list.item_at_index(index).get_mrl()
@@ -73,8 +73,8 @@ class VLC():
     def get_author(self, index=-1):
         if index == -1:
             index = self.current
-        if index >= self.num_files():
-            raise IndexError((self.__class__.__name__) + ".get_filename()")
+        if index < 0 or index >= self.num_files():
+            raise IndexError((self.__class__.__name__) + ".get_author()")
 
         artist = self.media_list.item_at_index(index).get_meta(vlc.Meta.Artist)
         
@@ -87,8 +87,8 @@ class VLC():
     def get_title(self, index=-1):
         if index == -1:
             index = self.current
-        if index >= self.num_files():
-            raise IndexError((self.__class__.__name__) + ".get_filename()")
+        if index < 0 or index >= self.num_files():
+            raise IndexError((self.__class__.__name__) + ".get_title()")
 
         album = self.media_list.item_at_index(index).get_meta(vlc.Meta.Album)
         title = self.media_list.item_at_index(index).get_meta(vlc.Meta.Title)
@@ -98,15 +98,13 @@ class VLC():
         if title:
             return title
         return None
-        
-        NotImplementedError((self.__class__.__name__) + "." + "get_title()")
 
     # Return the length (in seconds) of the current or specified file
     def get_duration(self, index=-1):
         if index == -1:
             index = self.current
-        if index >= self.num_files():
-            raise IndexError((self.__class__.__name__) + ".get_filename()")
+        if index < 0 or index >= self.num_files():
+            raise IndexError((self.__class__.__name__) + ".get_duration()")
 
         duration = self.media_list.item_at_index(index).get_duration() # ms, exact
         return duration // 1000 # s, rounded
