@@ -19,11 +19,9 @@ def init_vlc():
     files = [
             "mp3/whisperingeye_01_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_02_fleming-roberts_64kb.mp3",
-            "mp3/whiserpingeye_03_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_03_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_04_fleming-roberts_64kb.mp3"
     ]
-
-    #vlc.load("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
     vlc.load_all(files)
 
 def signal_handler(signal, frame):
@@ -37,8 +35,8 @@ def cleanup():
 
 def btn1_action(pin, event):
     global vlc
-    if vlc.prev():
-        print("prev")
+    if vlc.next() >= 0:
+        print("next (" + str(vlc.get_current()) +  ")")
     else:
         print("n/a")
 
@@ -53,8 +51,8 @@ def btn2_action(pin, event):
 
 def btn3_action(pin, event):
     global vlc
-    if vlc.next():
-        print("next")
+    if vlc.prev() >= 0:
+        print("prev (" + str(vlc.get_current()) + ")")
     else:
         print("n/a")
 

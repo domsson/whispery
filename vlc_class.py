@@ -28,6 +28,7 @@ class VLC():
         if index < 0 or index >= len(self.files):
             raise IndexError((self.__class__.__name__) + ".get_filename()")
         self.media = self.instance.media_new(self.files[index])
+        self.player.set_media(self.media)
 
     # Load a given file. Frees all currently loaded files.
     # Return 1 on success, 0 on failure
@@ -39,7 +40,6 @@ class VLC():
 
         self.add(file)      # Add the file to the media_list
         self.init_media(0)  # Turn the file into media
-        self.load_media()   # Load the media into the player
 
     # Add a media file to the media list
     # Returns the number of files in the file list
@@ -72,7 +72,6 @@ class VLC():
 
         num_files = self.add_all(files)
         self.init_media(0)
-        self.load_media()
         return num_files
 
     # Return the number of loaded files
@@ -218,7 +217,7 @@ class VLC():
     # Go to the beginning of the next file (if multiple loaded)
     # Return the number of the new file or -1 if there is no next.
     def next(self):
-        if self.current > self.num_files():
+        if (self.current + 1) >= self.num_files():
             return -1
 
         was_playing = self.player.is_playing()
@@ -272,8 +271,3 @@ class VLC():
             self.stop()
             self.media.release()
             self.media = None
-
-    # Reload the media list into the player
-    def load_media(self):
-        if self.media:
-            self.player.set_media(self.media)
