@@ -57,33 +57,16 @@ def btn1_action(pin, event):
         print("playing...")
     else:
         #vlc_player.stop()
-		vlc.stop()
+        vlc.stop()
         print("stopped.")
 
 def btn2_action(pin, event):
-    #global volume
-    #global vlc_player
     global vlc
-    
-#    volume = volume - 10
-#    if volume < 0:
-#        volume = 0
-
-#    vlc_player.audio_set_volume(volume)
-    #print("volume: " + str(volume))
-    print("volume: " + str(vlc.set_volume(vlc.get_volume() - 10))
+    print("volume: " + str(vlc.set_volume(vlc.get_volume() - 10 )))
 
 def btn3_action(pin, event):
-    #global vlc_player
-    #global volume
-
-    #volume = volume + 10
-    #if volume > 100:
-    #    volume = 100
-
-    #vlc_player.audio_set_volume(volume)
-    #print("volume: " + str(volume))
-    print("volume: " + str(vlc.set_volume(vlc.get_volume() + 10))
+    global vlc
+    print("volume: " + str(vlc.set_volume(vlc.get_volume() + 10)))
 
 def btn4_action(pin, event):
     print("btn 4, pin " + str(pin))
