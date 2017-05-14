@@ -12,6 +12,14 @@ vlc_instance = None
 vlc_player = None
 vlc_media = None
 
+vlc_options = [
+	"--aout=alsa",
+	"--novideo",
+	"--one-instance",
+	"--no-playlist-autostart",
+	"--playlist-enqueue"
+]
+
 playing = False
 volume = 50
 
@@ -23,7 +31,7 @@ def init_vlc():
     global vlc_media
     global vlc_player
     global volume
-    vlc_instance = vlc.Instance("--aout=alsa")
+    vlc_instance = vlc.Instance(" ".join(vlc_options))
     vlc_player = vlc_instance.media_player_new()
     vlc_media = vlc_instance.media_new("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
     vlc_player.set_media(vlc_media)
@@ -131,18 +139,6 @@ rot2_pin1 = 16
 rot2_pin2 = 20
 
 gpio.setmode(gpio.BCM)
-
-#gpio.setup(pin_btn1, gpio.IN, pull_up_down = gpio.PUD_UP)
-#gpio.add_event_detect(pin_btn1, gpio.FALLING, callback = button_test, bouncetime = bnc_btn1)
-
-#gpio.setup(pin_btn2, gpio.IN, pull_up_down = gpio.PUD_UP)
-#gpio.add_event_detect(pin_btn2, gpio.FALLING, callback = btn2_action, bouncetime = bnc_btn2)
-
-#gpio.setup(pin_btn3, gpio.IN, pull_up_down = gpio.PUD_UP)
-#gpio.add_event_detect(pin_btn3, gpio.FALLING, callback = btn3_action, bouncetime = bnc_btn3)
-
-#gpio.setup(pin_btn4, gpio.IN, pull_up_down = gpio.PUD_UP)
-#gpio.add_event_detect(pin_btn4, gpio.FALLING, callback = btn4_action, bouncetime = bnc_btn4)
 
 btn1 = PushButton(gpio, pin_btn1, bnc_btn1, btn1_action)
 btn2 = PushButton(gpio, pin_btn2, bnc_btn2, btn2_action)
