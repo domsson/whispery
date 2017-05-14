@@ -7,7 +7,7 @@ import signal
 import RPi.GPIO as gpio 
 from rotary_class import RotaryEncoder
 from pbutton_class import PushButton
-from vlc2_class import VLC
+from vlc_class import VLC
 
 #vlc_instance = None
 #vlc_player = None
