@@ -192,6 +192,7 @@ class VLC():
     def seek(self, seconds):
         change_relative = seconds / self.get_duration()
         self.set_position_relative(self.get_position_relative() + change_relative)
+        return self.get_position()
 
     # Go to the beginning of the previous file (if multiple loaded)
     # Return the number of the new file or -1 if there is no previous.
@@ -223,7 +224,7 @@ class VLC():
 
     # Start/Resume the playback from the current position
     def play(self):
-        self.player.play() # TODO does this play from the start or cur pos?
+        self.player.play()
 
     # Pause the playback and remember the current position
     def pause(self):
@@ -242,7 +243,7 @@ class VLC():
 
     # Halt playback and set position to 0
     def stop(self):
-        self.player.stop() # TODO does this reset the pos to start?
+        self.player.stop()
 
     # Halt playback, free all resources, clean up after yourself
     def cleanup(self):

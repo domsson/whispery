@@ -57,7 +57,8 @@ def btn3_action(pin, event):
         print("n/a")
 
 def btn4_action(pin, event):
-    print("btn 4, pin " + str(pin))
+    global vlc
+    print("pos: " + str(vlc.get_position()) + " s")
 
 def btn5_action(pin, event):
     global vlc
@@ -75,9 +76,9 @@ def rot1_action(event):
 
 def rot2_action(event):
     if event == RotaryEncoder.CW:
-        print("pos: " + str(vlc.seek(30)))
+        print("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
     elif event == RotaryEncoder.CCW:
-        print("pos: " + str(vlc.seek(30)))
+        print("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
     else:
         print("rot2 x")
 
