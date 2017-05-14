@@ -23,6 +23,7 @@ running = False
 def init_vlc():
     global vlc
     vlc = VLC()
+    vlc.load("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
 #    global vlc_instance
 #    global vlc_player
 #    global vlc_media
