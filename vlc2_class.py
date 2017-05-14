@@ -1,3 +1,5 @@
+import vlc
+
 class VLC():
 
     options = [
@@ -15,7 +17,7 @@ class VLC():
     def __init__(self):
         self.instance = vlc.Instance(" ".join(VLC.options))
         self.player = self.instance.media_player_new()
-        self.player.audio_set_volume(VLC.volume_def))
+        self.player.audio_set_volume(VLC.volume_def)
         self.media = None
         self.files = []
         self.current = -1
@@ -87,7 +89,7 @@ class VLC():
             print("warning: no media initialized yet!")
         if index == -1:
             index = self.current
-        if index < 0 or >= self.num_files():
+        if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_author()")
 
         artist = ""
