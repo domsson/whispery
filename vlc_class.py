@@ -80,9 +80,6 @@ class VLC():
     
     # Return the file name of the current or specified file (by index)
     def get_filename(self, index=-1):
-        if not media:
-            # TODO
-            print("warning: no media initialized yet!")
         if index == -1:
             index = self.current
         if index < 0 or index >= self.num_files():
@@ -93,16 +90,13 @@ class VLC():
     # Return the name of the current or specified file's artist
     # This should be the author. If not set, return `None`
     def get_author(self, index=-1):
-        if not media:
-            # TODO
-            print("warning: no media initialized yet!")
         if index == -1:
             index = self.current
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_author()")
 
         artist = ""
-        if index == current:
+        if self.media and index == current:
             artist = self.media.get_meta(vlc.Meta.Artist)
         else:
             temp_media = self.instance.media_new(self.files[index])
@@ -115,9 +109,6 @@ class VLC():
     # Return the name of the current of specified file's title
     # This should be the title of the book. If not set, return `None`
     def get_title(self, index=-1):
-        if not media:
-            # TODO
-            print("warning: no media initialized yet!")
         if index == -1:
             index = self.current
         if index >= self.num_files():
@@ -126,7 +117,7 @@ class VLC():
         album = ""
         title = ""
 
-        if index == current:
+        if self.media and index == self.current:
             album = self.media.get_meta(vlc.Meta.Album)
             title = self.media.get_meta(vlc.Meta.Title)
         else:
@@ -142,15 +133,17 @@ class VLC():
 
     # Return the length (in seconds) of the current or specified file
     def get_duration(self, index=-1):
-        if not media:
-            # TODO
-            print("warning: no media initialized yet!")
         if index == -1:
             index = self.current
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_duration()")
 
-        duration = self.media.get_duration() # ms, exact
+        duration = -1
+        if self.media and index == self.current:
+            duration = self.media.get_duration() # ms, exact
+        else:
+            temp_media = self.instance.media_new(self.files[index])
+            duration = temp_media.get_duration() # ms, exact
         return duration // 1000 # s, rounded
     
     # Return the index of the current file
@@ -198,7 +191,7 @@ class VLC():
     # Return the new position
     def seek(self, seconds):
         change_relative = seconds / self.get_duration()
-        set_position_relative(get_position_relative() + change_relative)
+        self.set_position_relative(self.get_position_relative() + change_relative)
 
     # Go to the beginning of the previous file (if multiple loaded)
     # Return the number of the new file or -1 if there is no previous.
