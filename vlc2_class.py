@@ -25,14 +25,14 @@ class VLC():
     # Turn the selected file into media to make it the current file
     # This is required in order to play the selected file
     def init_media(self, index):
-        if index < 0 or index >= len(files):
+        if index < 0 or index >= len(self.files):
             raise IndexError((self.__class__.__name__) + ".get_filename()")
-        media = self.instance.media_new(files[index])
+        media = self.instance.media_new(self.files[index])
 
     # Load a given file. Frees all currently loaded files.
     # Return 1 on success, 0 on failure
     def load(self, file):
-        files = []
+        self.files = []
         self.reset_player() # re-create the player
         self.reset_media()  # release the media
 
@@ -42,22 +42,22 @@ class VLC():
 
     # Add a media file to the media list
     def add(self, mrl):
-        files.append(mrl)
+        self.files.append(mrl)
         #media = self.instance.media_new(mrl)
 
     # Load a given list of files. Frees all currently loaded files.
     # After this operation, the first of the given files will be ready to play.
     # Return the number of files loaded
     def load_all(self, files):        
-        if len(files) == 0:
+        if len(self.files) == 0:
             return 0
 
-        files = []
+        self.files = []
         self.reset_player()
         self.reset_media()
 
         num_files_loaded = 0
-        for file in files:
+        for file in self.files:
             num_files_loaded += self.add(file)
 
         self.init_media(0)
@@ -96,7 +96,7 @@ class VLC():
         if index == current:
             artist = self.media.get_meta(vlc.Meta.Artist)
         else:
-            temp_media = self.instance.media_new(files[index])
+            temp_media = self.instance.media_new(self.files[index])
             artist = media.get_meta(vlc.Meta.Artist)
 
         if artist:
@@ -121,7 +121,7 @@ class VLC():
             album = self.media.get_meta(vlc.Meta.Album)
             title = self.media.get_meta(vlc.Meta.Title)
         else:
-            temp_media = self.instance.media_new(files[index])
+            temp_media = self.instance.media_new(self.files[index])
             album = temp_media.get_meta(vlc.Meta.Album)
             title = temp_media.get_meta(vlc.Meta.Title)
 
