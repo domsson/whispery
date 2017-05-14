@@ -7,35 +7,32 @@ import signal
 import RPi.GPIO as gpio 
 from rotary_class import RotaryEncoder
 from pbutton_class import PushButton
+from vlc_class import VLC
 
-vlc_instance = None
-vlc_player = None
-vlc_media = None
+#vlc_instance = None
+#vlc_player = None
+#vlc_media = None
+#vlc_options = ["--aout=alsa", "--novideo", "--one-instance", "--no-playlist-autostart", "--playlist-enqueue"]
 
-vlc_options = [
-	"--aout=alsa",
-	"--novideo",
-	"--one-instance",
-	"--no-playlist-autostart",
-	"--playlist-enqueue"
-]
-
+vlc = None
 playing = False
 volume = 50
 
 running = False
 
 def init_vlc():
-    global vlc_instance
-    global vlc_player
-    global vlc_media
-    global vlc_player
-    global volume
-    vlc_instance = vlc.Instance(" ".join(vlc_options))
-    vlc_player = vlc_instance.media_player_new()
-    vlc_media = vlc_instance.media_new("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
-    vlc_player.set_media(vlc_media)
-    vlc_player.audio_set_volume(volume)
+    global vlc
+    vlc = VLC()
+#    global vlc_instance
+#    global vlc_player
+#    global vlc_media
+#    global vlc_player
+#    global volume
+#    vlc_instance = vlc.Instance(" ".join(vlc_options))
+#    vlc_player = vlc_instance.media_player_new()
+#    vlc_media = vlc_instance.media_new("mp3/whisperingeye_01_fleming-roberts_64kb.mp3")
+#    vlc_player.set_media(vlc_media)
+#    vlc_player.audio_set_volume(volume)
 
 def signal_handler(signal, frame):
     global running
@@ -43,42 +40,50 @@ def signal_handler(signal, frame):
 
 def cleanup():
     gpio.cleanup()
-    vlc_player.stop()
+    #vlc_player.stop()
+    global vlc
+    vlc.stop()
 
 def btn1_action(pin, event):
     global playing
-    global vlc_player
+    # global vlc_player
+    global vlc
     
     playing = not playing
 
     if playing:
-        vlc_player.play()
+        #vlc_player.play()
+        vlc.play()
         print("playing...")
     else:
-        vlc_player.stop()
+        #vlc_player.stop()
+		vlc.stop()
         print("stopped.")
 
 def btn2_action(pin, event):
-    global vlc_player
-    global volume
+    #global volume
+    #global vlc_player
+    global vlc
     
-    volume = volume - 10
-    if volume < 0:
-        volume = 0
+#    volume = volume - 10
+#    if volume < 0:
+#        volume = 0
 
-    vlc_player.audio_set_volume(volume)
-    print("volume: " + str(volume))
+#    vlc_player.audio_set_volume(volume)
+    #print("volume: " + str(volume))
+    print("volume: " + str(vlc.set_volume(vlc.get_volume() - 10))
 
 def btn3_action(pin, event):
-    global vlc_player
-    global volume
+    #global vlc_player
+    #global volume
 
-    volume = volume + 10
-    if volume > 100:
-        volume = 100
+    #volume = volume + 10
+    #if volume > 100:
+    #    volume = 100
 
-    vlc_player.audio_set_volume(volume)
-    print("volume: " + str(volume))
+    #vlc_player.audio_set_volume(volume)
+    #print("volume: " + str(volume))
+    print("volume: " + str(vlc.set_volume(vlc.get_volume() + 10))
 
 def btn4_action(pin, event):
     print("btn 4, pin " + str(pin))
@@ -87,12 +92,15 @@ def btn5_action(pin, event):
     print("btn 5, pin " + str(pin))
 
 def rot1_action(event):
+    global vlc
     if event == RotaryEncoder.CW:
-        volume = set_volume(vlc_player.audio_get_volume() + 1)
-        print("vol = " + str(volume))
+        #volume = set_volume(vlc_player.audio_get_volume() + 1)
+        #print("vol = " + str(volume))
+        print("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
     elif event == RotaryEncoder.CCW:
-        volume = set_volume(vlc_player.audio_get_volume() - 1)
-        print("vol = " + str(volume))
+        #volume = set_volume(vlc_player.audio_get_volume() - 1)
+        #print("vol = " + str(volume))
+        print("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
     else:
         print("rot1 x")
 
@@ -105,12 +113,14 @@ def rot2_action(event):
         print("rot2 x")
 
 def set_volume(volume):
-    if volume > 100:
-        volume = 100
-    elif volume < 0:
-        volume = 0
-    vlc_player.audio_set_volume(volume)
-    return vlc_player.audio_get_volume()
+    #if volume > 100:
+    #    volume = 100
+    #elif volume < 0:
+    #    volume = 0
+    #vlc_player.audio_set_volume(volume)
+    #return vlc_player.audio_get_volume()
+    global vlc
+    return vlc.set_volume(volume)
 
 signal.signal(signal.SIGINT, signal_handler)
 
