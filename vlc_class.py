@@ -23,14 +23,18 @@ class VLC(AudioPlayer):
         self.files = []
         self.current = -1
 
-    # Reset the player to its initial state, releasing resources
-    # This includes halting playback and emptying the file list
-    def reset(self):
-        self.stop()
+    # Halt playback and release all resources, effectively
+    # resetting the instance to its initial state
+    # However, by default, the set volume will be kept
+    def reset(self, reset_volume=False):
+        self.stop()                 # Halt playback
+        volume = self.get_volume()  # Remember volume setting
 
-        if self.player: 
+        if self.player:
             self.player.release()
             self.player = self.instance.media_player_new()
+            if not reset_volume:
+                self.set_volume(volume)
 
         if self.media:
             self.media.release()
@@ -73,7 +77,6 @@ class VLC(AudioPlayer):
             self.init_media(0)      # Load the first file into the player
             return 1
         return 0
-
 
     # Load a given list of files and free all previously loaded files
     # Return the number of files loaded
