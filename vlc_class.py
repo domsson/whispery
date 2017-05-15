@@ -18,8 +18,7 @@ class VLC(AudioPlayer):
     def __init__(self, volume=None):
         self.instance = vlc.Instance(" ".join(VLC.options))
         self.player = self.instance.media_player_new()
-        self.media = None
-        self.files = []
+        self.media = []
         self.current = -1
         if volume:
             self.volume_ini = volume
@@ -42,11 +41,10 @@ class VLC(AudioPlayer):
             else:
                 self.set_volume(volume)
 
-        if self.media:
-            self.media.release()
-            self.media = None
-
-        self.files = []
+        for m in self.media:
+            m.release()
+        
+        self.media = []
         self.current = -1
 
     # Turn the selected file into media to make it the current file
@@ -54,25 +52,23 @@ class VLC(AudioPlayer):
     def init_media(self, index):
         if index < 0 or index >= len(self.files):
             raise IndexError((self.__class__.__name__) + ".init_media()")
-        self.media = self.instance.media_new(self.files[index])
-        self.player.set_media(self.media)
+        self.player.set_media(self.media[index])
+        self.current = index
 
     # Add a given file to the list of files
     # Returns the new number of files in the file list
     def add(self, mrl):
-        self.files.append(mrl)
-        if self.current == -1:
-            self.current = 0
-        return len(self.files)
+        new_media = self.instance.media_new(mrl)
+        self.media.append(new_media)
+        self.media[-1].parse() # Start parsing meta data...
+        return len(self.media)
 
     # Add the given files to the list of files
     # Returns the new number of files in the file list
     def add_all(self, mrls):
         for mrl in mrls:
-            self.files.append(mrl)
-        if self.current == -1:
-            self.current = 0
-        return len(self.files)
+            self.add(mrl)
+        return len(self.media)
 
     # Load a given file. Frees all currently loaded files
     # Return 1 on success, 0 on failure
@@ -98,7 +94,7 @@ class VLC(AudioPlayer):
 
     # Return the number of loaded files
     def num_files(self):
-        return len(self.files)
+        return len(self.media)
     
     # Return the file name of the current or specified file (by index)
     def get_filename(self, index=-1):
@@ -117,16 +113,7 @@ class VLC(AudioPlayer):
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_author()")
 
-        artist = ""
-        if self.media and index == current:
-            artist = self.media.get_meta(vlc.Meta.Artist)
-        else:
-            temp_media = self.instance.media_new(self.files[index])
-            artist = media.get_meta(vlc.Meta.Artist)
-
-        if artist:
-            return artist
-        return None
+        return self.media[index].get_meta(vlc.Meta.Artist)
 
     # Return the name of the current of specified file's title
     # This should be the title of the book. If not set, return `None`
@@ -136,22 +123,13 @@ class VLC(AudioPlayer):
         if index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_title()")
 
-        album = ""
-        title = ""
-
-        if self.media and index == self.current:
-            album = self.media.get_meta(vlc.Meta.Album)
-            title = self.media.get_meta(vlc.Meta.Title)
-        else:
-            temp_media = self.instance.media_new(self.files[index])
-            album = temp_media.get_meta(vlc.Meta.Album)
-            title = temp_media.get_meta(vlc.Meta.Title)
+        album = self.media[index].get_meta(vlc.Meta.Album) 
+        title = self.media[index].get_meta(vlc.Meta.Title)
 
         if album:
             return album
-        if title:
+        else:
             return title
-        return None
 
     # Return the length (in seconds) of the current or specified file
     def get_duration(self, index=-1):
@@ -160,12 +138,7 @@ class VLC(AudioPlayer):
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_duration()")
 
-        duration = -1
-        if self.media and index == self.current:
-            duration = self.media.get_duration() # ms, exact
-        else:
-            temp_media = self.instance.media_new(self.files[index])
-            duration = temp_media.get_duration() # ms, exact
+        duration = self.media[index].get_duration() # ms, exact
         return duration // 1000 # s, rounded
     
     # Return the index of the current file
@@ -271,6 +244,7 @@ class VLC(AudioPlayer):
     def cleanup(self):
         self.stop()
         self.player.release()
-        self.media.release()
-        self.files = []
+        for m in self.media:
+            m.release()
+        self.media = []
         self.current = -1

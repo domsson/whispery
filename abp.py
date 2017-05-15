@@ -10,7 +10,6 @@ from pbutton_class import PushButton
 from vlc_class import VLC
 
 vlc = None
-
 running = False
 
 def init_vlc():
@@ -28,16 +27,29 @@ def init_vlc():
             "mp3/whisperingeye_09_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_10_fleming-roberts_64kb.mp3"
     ]
-    vlc.load_all(files)
+    num_files = vlc.load_all(files)
+
+def print_vlc_info():
+    global vlc
+    print("Number of files in playlist: " + str(vlc.num_files()))
+    print("Volume: " + str(vlc.get_volume()))
+    print("Track: " + str(vlc.get_current()) + "(" + str(vlc.get_duration()) + " s)")
+    print("File: " + vlc.get_filename())
+    print("Author: " + vlc.get_author())
+    print("Title: " + vlc.get_title())
+    if vlc.is_playing():
+        print("Status: playing")
+    else:
+        print("Status: stopped/paused")
 
 def signal_handler(signal, frame):
     global running
     running = False
 
 def cleanup():
-    gpio.cleanup()
     global vlc
-    vlc.stop()
+    gpio.cleanup()
+    vlc.cleanup()
 
 def btn1_action(pin, event):
     global vlc
@@ -90,8 +102,14 @@ def rot2_action(event):
 
 signal.signal(signal.SIGINT, signal_handler)
 
+sys.stdout.write("Initializing audio player... ")
 init_vlc()
+sys.stdout.write("done\n")
+sys.stdout.flush()
+
 running = True
+
+sys.stdout.write("Initializing GPIO... ")
 
 pin_btn1 = 15
 bnc_btn1 = 300
@@ -111,8 +129,8 @@ bnc_btn5 = 300
 rot1_pin1 = 11
 rot1_pin2 = 0
 
-rot2_pin1 = 16
-rot2_pin2 = 20
+rot2_pin1 = 20
+rot2_pin2 = 16
 
 gpio.setmode(gpio.BCM)
 
@@ -124,9 +142,16 @@ btn5 = PushButton(gpio, pin_btn5, bnc_btn5, btn5_action)
 rot1 = RotaryEncoder(gpio, rot1_pin1, rot1_pin2, rot1_action)
 rot2 = RotaryEncoder(gpio, rot2_pin1, rot2_pin2, rot2_action)
 
+sys.stdout.write("done\n")
+sys.stdout.flush()
+
+print_vlc_info()
+
 while running:
     time.sleep(1)
 
-print("bye!\n")
+sys.stdout.write("Shutdown initialized... ")
 cleanup()
+sys.stdout.write("done. Bye!\n")
+sys.stdout.flush()
 sys.exit(0)
