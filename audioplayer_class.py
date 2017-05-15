@@ -103,6 +103,11 @@ class AudioPlayer():
     def stop(self):
         raise NotImplementedError((self.__class__.__name__) + ".stop()")
 
+    # Set a callback that will be called every time
+    # the playback of a track reaches its end
+    def set_callback_track_end(self, callback):
+        raise NotImplementedError((self.__class__.__name__) + ".set_callback_track_end()")
+    
     # Halt playback, free all resources, clean up after yourself
     def cleanup(self):
         raise NotImplementedError((self.__class__.__name__) + ".cleanup()")

@@ -14,7 +14,7 @@ running = False
 
 def init_vlc():
     global vlc
-    vlc = VLC()
+    vlc = VLC(100)
     files = [
             "mp3/whisperingeye_01_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_02_fleming-roberts_64kb.mp3",
