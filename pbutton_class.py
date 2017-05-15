@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 class PushButton:
 
     FALLING = -1
@@ -26,5 +24,3 @@ class PushButton:
         else:
             event = self.FALLING
         self.callback(self.pin, event)
-
-# End of PushButton class

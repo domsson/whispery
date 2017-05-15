@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import math
 
 class RotaryEncoder:
@@ -28,7 +26,6 @@ class RotaryEncoder:
         # Add event detection to the GPIO inputs
         self.gpio.add_event_detect(self.pin_a, self.gpio.BOTH, callback=self.switch_event)
         self.gpio.add_event_detect(self.pin_b, self.gpio.BOTH, callback=self.switch_event)
-        return
 
     # Call back routine called by switch events
     def switch_event(self, switch):
@@ -52,5 +49,3 @@ class RotaryEncoder:
             if self.steps >= 4:
                 self.steps = 0
                 self.callback(self.last_delta)
-
-# End of RotaryEncoder class
