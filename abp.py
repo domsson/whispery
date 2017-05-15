@@ -20,7 +20,13 @@ def init_vlc():
             "mp3/whisperingeye_01_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_02_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_03_fleming-roberts_64kb.mp3",
-            "mp3/whisperingeye_04_fleming-roberts_64kb.mp3"
+            "mp3/whisperingeye_04_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_05_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_06_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_07_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_08_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_09_fleming-roberts_64kb.mp3",
+            "mp3/whisperingeye_10_fleming-roberts_64kb.mp3"
     ]
     vlc.load_all(files)
 

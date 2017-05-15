@@ -5,9 +5,7 @@ class VLC():
     options = [
         "--aout=alsa",
         "--novideo",
-        #"--one-instance",
-        #"--no-playlist-autostart",
-        #"--playlist-enqueue"
+        "--one-instance"
     ]
 
     volume_def = 50
@@ -26,31 +24,20 @@ class VLC():
     # This is required in order to play the selected file
     def init_media(self, index):
         if index < 0 or index >= len(self.files):
-            raise IndexError((self.__class__.__name__) + ".get_filename()")
+            raise IndexError((self.__class__.__name__) + ".init_media()")
         self.media = self.instance.media_new(self.files[index])
         self.player.set_media(self.media)
 
-    # Load a given file. Frees all currently loaded files.
-    # Return 1 on success, 0 on failure
-    def load(self, file):
-        self.files = []
-        self.reset_player() # re-create the player
-        self.reset_media()  # release the media
-        self.current = -1
-
-        self.add(file)      # Add the file to the media_list
-        self.init_media(0)  # Turn the file into media
-
-    # Add a media file to the media list
-    # Returns the number of files in the file list
+    # Add a given file to the list of files
+    # Returns the new number of files in the file list
     def add(self, mrl):
         self.files.append(mrl)
         if self.current == -1:
             self.current = 0
         return len(self.files)
 
-    # Add all given media files to the media list
-    # Returns the number of files in the file list
+    # Add the given files to the list of files
+    # Returns the new number of files in the file list
     def add_all(self, mrls):
         for mrl in mrls:
             self.files.append(mrl)
@@ -58,11 +45,21 @@ class VLC():
             self.current = 0
         return len(self.files)
 
-    # Load a given list of files. Frees all currently loaded files.
-    # After this operation, the first of the given files will be ready to play.
+    # Load a given file. Frees all currently loaded files
+    # Return 1 on success, 0 on failure
+    def load(self, mrl):
+        self.files = []
+        self.reset_player() # re-create the player
+        self.reset_media()  # release the media
+        self.current = -1
+
+        self.add(mrl)      # Add the file to the media_list
+        self.init_media(0)  # Turn the file into media
+
+    # Load a given list of files and free all previously loaded files
     # Return the number of files loaded
-    def load_all(self, files):        
-        if len(files) == 0:
+    def load_all(self, mrls):        
+        if len(mrls) == 0:
             return 0
 
         self.files = []
@@ -70,7 +67,7 @@ class VLC():
         self.reset_media()
         self.current = -1
 
-        num_files = self.add_all(files)
+        num_files = self.add_all(mrls)
         self.init_media(0)
         return num_files
 

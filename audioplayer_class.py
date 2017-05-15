@@ -1,13 +1,23 @@
 class AudioPlayer():
 
-    # Load a given file
+    # Add a given file to the list of files
+    # Returns the new number of files in the file list
+    def add(self, mrl):
+        raise NotImplementedError((self.__class__.__name__) + ".add()")
+
+    # Add the given files to the list of files
+    # Returns the new number of files in the file list
+    def add_all(self, mrl):
+        raise NotImplementedError((self.__class__.__name__) + ".add_all()")
+
+    # Load a given file and free all previously loaded files
     # Return 1 on success, 0 on failure
-    def load(self, file):
+    def load(self, mrl):
         raise NotImplementedError((self.__class__.__name__) + ".load()")
 
-    # Load a given list of files
+    # Load a given list of files and free all previously loaded files
     # Return the number of files loaded
-    def load_all(self, files):
+    def load_all(self, mrls):
         raise NotImplementedError((self.__class__.__name__) + ".load_all()")
 
     # Return the number of loaded files
@@ -21,7 +31,7 @@ class AudioPlayer():
     # Return the name of the current or specified file's artist
     # This should be the author. If not set, return `None`
     def get_author(self, index=-1):
-        raise NotImplementedError((self.__class__.__name__) + ".get_artist()")
+        raise NotImplementedError((self.__class__.__name__) + ".get_author()")
 
     # Return the name of the current of specified file's title
     # This should be the title of the book. If not set, return `None`
