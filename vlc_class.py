@@ -23,6 +23,22 @@ class VLC(AudioPlayer):
         self.files = []
         self.current = -1
 
+    # Reset the player to its initial state, releasing resources
+    # This includes halting playback and emptying the file list
+    def reset(self):
+        self.stop()
+
+        if self.player: 
+            self.player.release()
+            self.player = self.instance.media_player_new()
+
+        if self.media:
+            self.media.release()
+            self.media = None
+
+        self.files = []
+        self.current = -1
+
     # Turn the selected file into media to make it the current file
     # This is required in order to play the selected file
     def init_media(self, index):
@@ -51,13 +67,13 @@ class VLC(AudioPlayer):
     # Load a given file. Frees all currently loaded files
     # Return 1 on success, 0 on failure
     def load(self, mrl):
-        self.files = []
-        self.reset_player() # re-create the player
-        self.reset_media()  # release the media
-        self.current = -1
+        self.reset()                # Release the current playlist
+        num_files = self.add(mrl)   # Add the file to the list of files
+        if num_files > 0:
+            self.init_media(0)      # Load the first file into the player
+            return 1
+        return 0
 
-        self.add(mrl)      # Add the file to the media_list
-        self.init_media(0)  # Turn the file into media
 
     # Load a given list of files and free all previously loaded files
     # Return the number of files loaded
@@ -65,13 +81,10 @@ class VLC(AudioPlayer):
         if len(mrls) == 0:
             return 0
 
-        self.files = []
-        self.reset_player()
-        self.reset_media()
-        self.current = -1
-
-        num_files = self.add_all(mrls)
-        self.init_media(0)
+        self.reset()                    # Release the current playlist
+        num_files = self.add_all(mrls)  # Add the files to the list of files
+        if num_files > 0:
+            self.init_media(0)          # Load the first file into the player
         return num_files
 
     # Return the number of loaded files
@@ -248,20 +261,7 @@ class VLC(AudioPlayer):
     # Halt playback, free all resources, clean up after yourself
     def cleanup(self):
         self.stop()
-        self.reset_player()
-        self.reset_media()
+        self.player.release()
+        self.media.release()
+        self.files = []
         self.current = -1
-
-    # Halt playback, release the player
-    def reset_player(self):
-        if self.player:
-            self.stop()
-            self.player.release()
-            self.player = self.instance.media_player_new()
-
-    # Halt playback, empty the playlist (free the files)
-    def reset_media(self):
-        if self.media:
-            self.stop()
-            self.media.release()
-            self.media = None
