@@ -50,7 +50,7 @@ class VLC(AudioPlayer):
     # Turn the selected file into media to make it the current file
     # This is required in order to play the selected file
     def init_media(self, index):
-        if index < 0 or index >= len(self.files):
+        if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".init_media()")
         self.player.set_media(self.media[index])
         self.current = index
@@ -103,7 +103,7 @@ class VLC(AudioPlayer):
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".get_filename()")
 
-        return self.files[index]
+        return self.media[index].get_mrl()
 
     # Return the name of the current or specified file's artist
     # This should be the author. If not set, return `None`
