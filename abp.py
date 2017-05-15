@@ -11,6 +11,7 @@ from vlc_class import VLC
 
 vlc = None
 running = False
+proceed = False
 
 def init_vlc():
     global vlc
@@ -27,7 +28,8 @@ def init_vlc():
             "mp3/whisperingeye_09_fleming-roberts_64kb.mp3",
             "mp3/whisperingeye_10_fleming-roberts_64kb.mp3"
     ]
-    num_files = vlc.load_all(files)
+    vlc.load_all(files)
+    vlc.set_callback_track_end(on_track_end)
 
 def print_vlc_info():
     global vlc
@@ -41,6 +43,11 @@ def print_vlc_info():
         print("Status: playing")
     else:
         print("Status: stopped/paused")
+
+def on_track_end(event):
+    global proceed
+    print("Track ended, scheduling next track")
+    proceed = True
 
 def signal_handler(signal, frame):
     global running
@@ -126,11 +133,11 @@ bnc_btn4 = 300
 pin_btn5 = 21
 bnc_btn5 = 300 
 
-rot1_pin1 = 11
-rot1_pin2 = 0
+rot1_pin1 = 16 #11
+rot1_pin2 = 20 # 0
 
-rot2_pin1 = 20
-rot2_pin2 = 16
+rot2_pin1 = 11 #16 
+rot2_pin2 =  0 #20
 
 gpio.setmode(gpio.BCM)
 
@@ -148,6 +155,10 @@ sys.stdout.flush()
 print_vlc_info()
 
 while running:
+    if proceed:
+        proceed = False
+        vlc.next()
+        vlc.play()
     time.sleep(1)
 
 sys.stdout.write("Shutdown initialized... ")
