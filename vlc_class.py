@@ -161,7 +161,8 @@ class VLC(AudioPlayer):
 
     # Return the current position within the file, in seconds
     def get_position(self):
-        return self.get_duration() * self.get_position_relative()
+        #return self.get_duration() * self.get_position_relative()
+        return self.player.get_time() // 1000 # s, rounded
 
     # Seek to the specified position, in seconds
     # Return the new position
@@ -197,24 +198,23 @@ class VLC(AudioPlayer):
 
         was_playing = self.player.is_playing()
         self.stop()
-        self.current -= 1
-        self.init_media(self.current)
+        self.init_media(self.current - 1)
         if was_playing:
-            self.player.play()
+            self.play()
         return self.current
 
     # Go to the beginning of the next file (if multiple loaded)
     # Return the number of the new file or -1 if there is no next.
     def next(self):
         if (self.current + 1) >= self.num_files():
+            print("next() failed")
             return -1
 
         was_playing = self.player.is_playing()
         self.stop()
-        self.current += 1
-        self.init_media(self.current)
+        self.init_media(self.current + 1)
         if was_playing:
-            self.player.play()
+            self.play()
         return self.current
 
     # Start/Resume the playback from the current position
