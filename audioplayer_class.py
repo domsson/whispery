@@ -1,3 +1,7 @@
+# Abstract base class for an audio player.
+# Any class that extends this one needs to implement
+# all methods outlined below.
+
 class AudioPlayer():
 
     # Add a given file to the list of files

@@ -1,6 +1,9 @@
+# Implements the abstract AudioPlayer class
+# using VLC via Python's libvlc bindings
+
 import vlc
 
-class VLC():
+class VLC(AudioPlayer):
 
     options = [
         "--aout=alsa",
@@ -247,7 +250,7 @@ class VLC():
         self.stop()
         self.reset_player()
         self.reset_media()
-        self.current = 0
+        self.current = -1
 
     # Halt playback, release the player
     def reset_player(self):
