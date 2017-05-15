@@ -240,11 +240,16 @@ class VLC(AudioPlayer):
     def stop(self):
         self.player.stop()
 
+    def set_callback_track_end(self, callback):
+
+        self.player.event_manager().event_attach(vlc.EventType.MediaPlayerEndReached, callback)
+
     # Halt playback, free all resources, clean up after yourself
     def cleanup(self):
         self.stop()
         self.player.release()
         for m in self.media:
             m.release()
+        self.instance.release()
         self.media = []
         self.current = -1
