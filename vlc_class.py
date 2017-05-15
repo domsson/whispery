@@ -18,25 +18,28 @@ class VLC(AudioPlayer):
     def __init__(self, volume=None):
         self.instance = vlc.Instance(" ".join(VLC.options))
         self.player = self.instance.media_player_new()
-        if volume:
-            self.player.audio_set_volume(volume)
-        else:
-            self.player.audio_set_volume(VLC.volume_def)
         self.media = None
         self.files = []
         self.current = -1
+        if volume:
+            self.volume_ini = volume
+        else:
+            self.volume_ini = VLC.volume_def
+        self.player.audio_set_volume(self.volume_ini)
 
     # Halt playback and release all resources, effectively
     # resetting the instance to its initial state
     # However, by default, the set volume will be kept
     def reset(self, reset_volume=False):
-        volume = self.get_volume()  # Remember volume (is -1 after stop())
+        volume = self.get_volume()  # Remember volume (is -1 while stopped!)
         self.stop()                 # Halt playback
 
         if self.player:
             self.player.release()
             self.player = self.instance.media_player_new()
-            if not reset_volume:
+            if reset_volume:
+                self.set_volume(self.volume_ini)
+            else:
                 self.set_volume(volume)
 
         if self.media:
