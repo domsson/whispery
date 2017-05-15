@@ -2,23 +2,26 @@
 # using VLC via Python's libvlc bindings
 
 import vlc
+from audioplayer_class import AudioPlayer
 
 class VLC(AudioPlayer):
 
     options = [
         "--aout=alsa",
-        "--novideo",
-        "--one-instance"
+        "--novideo"
     ]
 
     volume_def = 50
     volume_min = 0
     volume_max = 100
 
-    def __init__(self):
+    def __init__(self, volume=None):
         self.instance = vlc.Instance(" ".join(VLC.options))
         self.player = self.instance.media_player_new()
-        self.player.audio_set_volume(VLC.volume_def)
+        if volume:
+            self.player.audio_set_volume(volume)
+        else:
+            self.player.audio_set_volume(VLC.volume_def)
         self.media = None
         self.files = []
         self.current = -1
@@ -27,8 +30,8 @@ class VLC(AudioPlayer):
     # resetting the instance to its initial state
     # However, by default, the set volume will be kept
     def reset(self, reset_volume=False):
+        volume = self.get_volume()  # Remember volume (is -1 after stop())
         self.stop()                 # Halt playback
-        volume = self.get_volume()  # Remember volume setting
 
         if self.player:
             self.player.release()
