@@ -45,14 +45,15 @@ font = ImageFont.truetype('cellphone_6px.ttf', 16)
 #draw.line((0, 54, 128, 54), fill=255)
 #draw.point((64,32), fill=255)
 
-draw.text((2, -4), "0123456789 !@#$%^&*()-=", font=font, fill=255)
-draw.text((2,  4), "abcdefghijklmnopqrstuvwxyz", font=font, fill=255)
-draw.text((2, 12), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", font=font, fill=255)
-draw.text((2, 20), "012345678901234567890123456789", font=font, fill=255)
-draw.text((2, 28), "Stephen King - The Dark Tower", font=font, fill=255)
-draw.text((2, 36), "GODDAMN HOW MANY LINES?", font=font, fill=255)
-draw.text((2, 44), "The seventh line already", font=font, fill=255)
-draw.text((2, 52), "Finally, the last line!", font=font, fill=255)
+#                   012345678901234567891
+draw.text((2, -4), "  Audio Book Player  ", font=font, fill=255)
+draw.text((2,  4), "---------------------", font=font, fill=255)
+draw.text((2, 12), "12/114            85%", font=font, fill=255)
+draw.text((2, 20), "    8:23 / 15:67     ", font=font, fill=255)
+draw.text((2, 28), "    Stephen King     ", font=font, fill=255)
+draw.text((2, 36), "   The Dark Tower    ", font=font, fill=255)
+draw.text((2, 44), "---------------------", font=font, fill=255)
+draw.text((2, 52), "MENU  <<  |>  >>  VOL", font=font, fill=255)
 
 # Display image.
 disp.image(image)
