@@ -31,29 +31,7 @@ image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
 
 # Draw a black filled box to clear the image.
-#draw.rectangle((0,0,width,height), outline=0, fill=0)
-
-# Draw some shapes.
-# First define some constants to allow easy resizing of shapes.
-#padding = 2
-#shape_width = 20
-#top = padding
-#bottom = height-padding
-# Move left to right keeping track of the current x position for drawing shapes.
-#x = padding
-# Draw an ellipse.
-#draw.ellipse((x, top , x+shape_width, bottom), outline=255, fill=0)
-#x += shape_width+padding
-# Draw a rectangle.
-#draw.rectangle((x, top, x+shape_width, bottom), outline=255, fill=0)
-#x += shape_width+padding
-# Draw a triangle.
-#draw.polygon([(x, bottom), (x+shape_width/2, top), (x+shape_width, bottom)], outline=255, fill=0)
-#x += shape_width+padding
-# Draw an X.
-#draw.line((x, bottom, x+shape_width, top), fill=255)
-#draw.line((x, top, x+shape_width, bottom), fill=255)
-#x += shape_width+padding
+draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 # Load default font.
 #font = ImageFont.load_default()
@@ -62,10 +40,6 @@ draw = ImageDraw.Draw(image)
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
 #font = ImageFont.truetype('cellphone_varwidth.ttf', 16)
 font = ImageFont.truetype('cellphone_6px.ttf', 16)
-
-# Write two lines of text.
-#draw.text((x, top),    'Hello',  font=font, fill=255)
-#draw.text((x, top+20), 'World!', font=font, fill=255)
 
 #draw.line((0, 10, 128, 10), fill=255)
 #draw.line((0, 54, 128, 54), fill=255)
