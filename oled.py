@@ -53,7 +53,7 @@ draw.text((2, 20), "    8:23 / 15:67     ", font=font, fill=255)
 draw.text((2, 28), "    Stephen King     ", font=font, fill=255)
 draw.text((2, 36), "   The Dark Tower    ", font=font, fill=255)
 draw.text((2, 44), "---------------------", font=font, fill=255)
-draw.text((2, 52), "MENU  <<  |>  >>  VOL", font=font, fill=255)
+draw.text((2, 52), "SEEK  <<  |>  >>  VOL", font=font, fill=255)
 
 # Display image.
 disp.image(image)
