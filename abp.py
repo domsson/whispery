@@ -19,7 +19,6 @@ def read_mp3s():
     global files
     for file in os.listdir("mp3"):
         if file.endswith(".mp3") or file.endswith(".ogg"):
-            print(os.path.join("mp3", file))
             files.append(os.path.join("mp3", file))
 
 def init_vlc():
