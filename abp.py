@@ -16,28 +16,16 @@ running = False
 proceed = False
 
 def read_mp3s():
-	global files
-	for file in os.listdir("./mp3"):
-	    if file.endswith(".mp3") or file.endswith(".ogg"):
-	        print(os.path.join("/mp3", file))
-			files.append(os.path.join("/mp3", file))
+    global files
+    for file in os.listdir("mp3"):
+        if file.endswith(".mp3") or file.endswith(".ogg"):
+            print(os.path.join("mp3", file))
+            files.append(os.path.join("mp3", file))
 
 def init_vlc():
     global vlc
-	global files
+    global files
     vlc = VLC(100)
-    #files = [
-    #        "mp3/whisperingeye_01_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_02_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_03_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_04_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_05_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_06_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_07_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_08_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_09_fleming-roberts_64kb.mp3",
-    #        "mp3/whisperingeye_10_fleming-roberts_64kb.mp3"
-    #]
     vlc.load_all(files)
     vlc.set_callback_track_end(on_track_end)
 
