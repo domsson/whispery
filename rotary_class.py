@@ -6,11 +6,12 @@ class RotaryEncoder:
     CCW = -1
 
     # Initialise rotary encoder object
-    def __init__(self, gpio, pin_a, pin_b, callback):
+    def __init__(self, gpio, pin_a, pin_b, callback, name=None):
         self.gpio = gpio
         self.pin_a = pin_a
         self.pin_b = pin_b
         self.callback = callback
+        self.name = name
 
         self.rotary_a = 0
         self.rotary_b = 0

@@ -20,6 +20,7 @@ def read_mp3s():
     for file in os.listdir("mp3"):
         if file.endswith(".mp3") or file.endswith(".ogg"):
             files.append(os.path.join("mp3", file))
+    files.sort()
 
 def init_vlc():
     global vlc
@@ -87,6 +88,9 @@ def btn5_action(pin, event):
     vlc.stop()
     print("stopped.")
 
+def rot_debug(event):
+    print("rot event: " + str(event))
+
 def rot1_action(event):
     global vlc
     if event == RotaryEncoder.CW:
@@ -94,15 +98,16 @@ def rot1_action(event):
     elif event == RotaryEncoder.CCW:
         print("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
     else:
-        print("rot1 x")
+        rot_debug(event)
 
 def rot2_action(event):
+    global vlc
     if event == RotaryEncoder.CW:
         print("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
     elif event == RotaryEncoder.CCW:
         print("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
     else:
-        print("rot2 x")
+        rot_debug(event)
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -129,24 +134,24 @@ bnc_btn3 = 300
 pin_btn4 = 5
 bnc_btn4 = 300 
 
-pin_btn5 = 21
+pin_btn5 = 26
 bnc_btn5 = 300 
 
-rot1_pin1 = 16 #11
-rot1_pin2 = 20 # 0
+rot1_pin1 = 11
+rot1_pin2 =  0
 
-rot2_pin1 = 11 #16 
-rot2_pin2 =  0 #20
+rot2_pin1 =  7 
+rot2_pin2 =  1
 
 gpio.setmode(gpio.BCM)
 
-btn1 = PushButton(gpio, pin_btn1, bnc_btn1, btn1_action)
-btn2 = PushButton(gpio, pin_btn2, bnc_btn2, btn2_action)
-btn3 = PushButton(gpio, pin_btn3, bnc_btn3, btn3_action)
-btn4 = PushButton(gpio, pin_btn4, bnc_btn4, btn4_action)
-btn5 = PushButton(gpio, pin_btn5, bnc_btn5, btn5_action)
-rot1 = RotaryEncoder(gpio, rot1_pin1, rot1_pin2, rot1_action)
-rot2 = RotaryEncoder(gpio, rot2_pin1, rot2_pin2, rot2_action)
+btn1 = PushButton(gpio, pin_btn1, bnc_btn1, btn1_action, name="btn1")
+btn2 = PushButton(gpio, pin_btn2, bnc_btn2, btn2_action, name="btn2")
+btn3 = PushButton(gpio, pin_btn3, bnc_btn3, btn3_action, name="btn3")
+#btn4 = PushButton(gpio, pin_btn4, bnc_btn4, btn4_action, name="btn4")
+#btn5 = PushButton(gpio, pin_btn5, bnc_btn5, btn5_action, name="btn5")
+rot1 = RotaryEncoder(gpio, rot1_pin1, rot1_pin2, rot1_action, name="rot1")
+rot2 = RotaryEncoder(gpio, rot2_pin1, rot2_pin2, rot2_action, name="rot2")
 
 sys.stdout.write("done\n")
 sys.stdout.flush()
