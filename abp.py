@@ -6,9 +6,9 @@ import vlc
 import time
 import signal 
 import RPi.GPIO as gpio 
-from rotary_class import RotaryEncoder
-from pbutton_class import PushButton
-from vlc_class import VLC
+from rotaryencoder import RotaryEncoder
+from pushbutton import PushButton
+from vlcplayer import VLCPlayer
 
 vlc = None
 files = []
@@ -25,7 +25,7 @@ def read_mp3s():
 def init_vlc():
     global vlc
     global files
-    vlc = VLC(100)
+    vlc = VLCPlayer(100)
     vlc.load_all(files)
     vlc.set_callback_track_end(on_track_end)
 
