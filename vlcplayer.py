@@ -16,7 +16,7 @@ class VLCPlayer(AudioPlayer):
     volume_max = 100
 
     def __init__(self, volume=None):
-        self.instance = vlc.Instance(" ".join(VLC.options))
+        self.instance = vlc.Instance(" ".join(VLCPlayer.options))
         self.player = self.instance.media_player_new()
         self.media = []
         self.current = -1
