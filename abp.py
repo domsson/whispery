@@ -131,7 +131,7 @@ bnc_btn2 = 300
 pin_btn3 = 10
 bnc_btn3 = 300
 
-pin_btn4 = 5
+pin_btn4 = 21 #5
 bnc_btn4 = 300 
 
 pin_btn5 = 26
@@ -148,7 +148,7 @@ gpio.setmode(gpio.BCM)
 btn1 = PushButton(gpio, pin_btn1, bnc_btn1, btn1_action, name="btn1")
 btn2 = PushButton(gpio, pin_btn2, bnc_btn2, btn2_action, name="btn2")
 btn3 = PushButton(gpio, pin_btn3, bnc_btn3, btn3_action, name="btn3")
-#btn4 = PushButton(gpio, pin_btn4, bnc_btn4, btn4_action, name="btn4")
+btn4 = PushButton(gpio, pin_btn4, bnc_btn4, btn4_action, name="btn4")
 #btn5 = PushButton(gpio, pin_btn5, bnc_btn5, btn5_action, name="btn5")
 rot1 = RotaryEncoder(gpio, rot1_pin1, rot1_pin2, rot1_action, name="rot1")
 rot2 = RotaryEncoder(gpio, rot2_pin1, rot2_pin2, rot2_action, name="rot2")
