@@ -1,4 +1,4 @@
-class PushButton:
+class PushButton():
 
     FALLING = -1
     RISING  =  1

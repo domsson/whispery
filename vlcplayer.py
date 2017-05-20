@@ -2,9 +2,9 @@
 # using VLC via Python's libvlc bindings
 
 import vlc
-from audioplayer_class import AudioPlayer
+from audioplayer import AudioPlayer
 
-class VLC(AudioPlayer):
+class VLCPlayer(AudioPlayer):
 
     options = [
         "--aout=alsa",

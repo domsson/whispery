@@ -39,7 +39,7 @@ draw.rectangle((0,0,width,height), outline=0, fill=0)
 # Alternatively load a TTF font.  Make sure the .ttf font file is in the same directory as the python script!
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
 #font = ImageFont.truetype('cellphone_varwidth.ttf', 16)
-font = ImageFont.truetype('cellphone_6px.ttf', 16)
+font = ImageFont.truetype('./fonts/cellphone_6px.ttf', 16)
 
 #draw.line((0, 10, 128, 10), fill=255)
 #draw.line((0, 54, 128, 54), fill=255)

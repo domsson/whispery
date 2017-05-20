@@ -1,6 +1,6 @@
 import math
 
-class RotaryEncoder:
+class RotaryEncoder():
 
     CW  =  1
     CCW = -1
