@@ -58,6 +58,8 @@ def cleanup():
 
 def btn_r_action(pin, event):
     global vlc
+    if event != PushButton.PRESSED:
+        return
     if vlc.next() >= 0:
         print("next (" + str(vlc.get_current()) +  ")")
     else:
@@ -65,6 +67,8 @@ def btn_r_action(pin, event):
 
 def btn_c_action(pin, event):
     global vlc
+    if event != PushButton.PRESSED:
+        return
     if vlc.is_playing():
         vlc.pause()
         print("pausing")
@@ -74,6 +78,8 @@ def btn_c_action(pin, event):
 
 def btn_l_action(pin, event):
     global vlc
+    if event != PushButton.PRESSED:
+        return
     if vlc.prev() >= 0:
         print("prev (" + str(vlc.get_current()) + ")")
     else:
@@ -131,17 +137,17 @@ btn_c_bnc = 300
 btn_r_pin = 17  # right button
 btn_r_bnc = 300
 
-btn_p_pin = 26  # pos rotary button
+btn_p_pin = 16  # pos rotary button
 btn_p_bnc = 300
 
-btn_v_pin = 16  # vol rotary button
+btn_v_pin = 26  # vol rotary button
 btn_v_bnc = 300 
 
-rot_p_pin1 = 11 # pos rotary encoder
-rot_p_pin2 =  0
+rot_p_pin1 =  7 # pos rotary encoder
+rot_p_pin2 =  1
 
-rot_v_pin1 =  7 # vol rotary encoder
-rot_v_pin2 =  1
+rot_v_pin1 = 11 # vol rotary encoder
+rot_v_pin2 =  0
 
 gpio.setmode(gpio.BCM)
 
