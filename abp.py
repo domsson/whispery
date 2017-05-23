@@ -56,14 +56,14 @@ def cleanup():
     gpio.cleanup()
     vlc.cleanup()
 
-def btn1_action(pin, event):
+def btn_r_action(pin, event):
     global vlc
     if vlc.next() >= 0:
         print("next (" + str(vlc.get_current()) +  ")")
     else:
         print("n/a")
 
-def btn2_action(pin, event):
+def btn_c_action(pin, event):
     global vlc
     if vlc.is_playing():
         vlc.pause()
@@ -72,18 +72,18 @@ def btn2_action(pin, event):
         vlc.play()
         print("playing...")
 
-def btn3_action(pin, event):
+def btn_l_action(pin, event):
     global vlc
     if vlc.prev() >= 0:
         print("prev (" + str(vlc.get_current()) + ")")
     else:
         print("n/a")
 
-def btn4_action(pin, event):
+def btn_v_action(pin, event):
     global vlc
     print("pos: " + str(vlc.get_position()) + " s")
 
-def btn5_action(pin, event):
+def btn_p_action(pin, event):
     global vlc
     vlc.stop()
     print("stopped.")
@@ -91,7 +91,7 @@ def btn5_action(pin, event):
 def rot_debug(event):
     print("rot event: " + str(event))
 
-def rot1_action(event):
+def rot_v_action(event):
     global vlc
     if event == RotaryEncoder.CW:
         print("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
@@ -100,7 +100,7 @@ def rot1_action(event):
     else:
         rot_debug(event)
 
-def rot2_action(event):
+def rot_p_action(event):
     global vlc
     if event == RotaryEncoder.CW:
         print("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
@@ -122,36 +122,36 @@ running = True
 
 sys.stdout.write("Initializing GPIO... ")
 
-pin_btn1 = 15
-bnc_btn1 = 300
+btn_l_pin = 24  # left button
+btn_l_bnc = 300
 
-pin_btn2 = 27
-bnc_btn2 = 300
+btn_c_pin = 23  # center button
+btn_c_bnc = 300
 
-pin_btn3 = 10
-bnc_btn3 = 300
+btn_r_pin = 17  # right button
+btn_r_bnc = 300
 
-pin_btn4 = 21 #5
-bnc_btn4 = 300 
+btn_p_pin = 26  # pos rotary button
+btn_p_bnc = 300
 
-pin_btn5 = 26
-bnc_btn5 = 300 
+btn_v_pin = 16  # vol rotary button
+btn_v_bnc = 300 
 
-rot1_pin1 = 11
-rot1_pin2 =  0
+rot_p_pin1 = 11 # pos rotary encoder
+rot_p_pin2 =  0
 
-rot2_pin1 =  7 
-rot2_pin2 =  1
+rot_v_pin1 =  7 # vol rotary encoder
+rot_v_pin2 =  1
 
 gpio.setmode(gpio.BCM)
 
-btn1 = PushButton(gpio, pin_btn1, bnc_btn1, btn1_action, name="btn1")
-btn2 = PushButton(gpio, pin_btn2, bnc_btn2, btn2_action, name="btn2")
-btn3 = PushButton(gpio, pin_btn3, bnc_btn3, btn3_action, name="btn3")
-btn4 = PushButton(gpio, pin_btn4, bnc_btn4, btn4_action, name="btn4")
-#btn5 = PushButton(gpio, pin_btn5, bnc_btn5, btn5_action, name="btn5")
-rot1 = RotaryEncoder(gpio, rot1_pin1, rot1_pin2, rot1_action, name="rot1")
-rot2 = RotaryEncoder(gpio, rot2_pin1, rot2_pin2, rot2_action, name="rot2")
+btn_l = PushButton(gpio, btn_l_pin, btn_l_bnc, btn_l_action, name="btn_l")
+btn_c = PushButton(gpio, btn_c_pin, btn_c_bnc, btn_c_action, name="btn_c")
+btn_r = PushButton(gpio, btn_r_pin, btn_r_bnc, btn_r_action, name="btn_r")
+btn_p = PushButton(gpio, btn_p_pin, btn_p_bnc, btn_p_action, name="btn_p")
+btn_v = PushButton(gpio, btn_v_pin, btn_v_bnc, btn_v_action, name="btn_v")
+rot_p = RotaryEncoder(gpio, rot_p_pin1, rot_p_pin2, rot_p_action, name="rot_p")
+rot_v = RotaryEncoder(gpio, rot_v_pin1, rot_v_pin2, rot_v_action, name="rot_v")
 
 sys.stdout.write("done\n")
 sys.stdout.flush()
