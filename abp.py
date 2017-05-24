@@ -112,15 +112,6 @@ def display_main_screen():
     self.oled.draw_string(7, "SEEK  <<  |>  >>  VOL")
     self.oled.display()
 
-draw.text((2, -4), "  Audio Book Player  ", font=font, fill=255)
-draw.text((2,  4), "---------------------", font=font, fill=255)
-draw.text((2, 12), "12/114            85%", font=font, fill=255)
-draw.text((2, 20), "    8:23 / 15:67     ", font=font, fill=255)
-draw.text((2, 28), "    Stephen King     ", font=font, fill=255)
-draw.text((2, 36), "   The Dark Tower    ", font=font, fill=255)
-draw.text((2, 44), "---------------------", font=font, fill=255)
-draw.text((2, 52), "SEEK  <<  |>  >>  VOL", font=font, fill=255)
-
 def on_track_end(event):
     # We can't call into libVLC from within the callback, so we'll take a detour
     global proceed
