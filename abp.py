@@ -14,6 +14,7 @@ from playerdisplay import PlayerDisplay
 vlc = None
 files = []
 oled = None
+debug = False
 running = False
 proceed = False
 last_input = 0 
@@ -21,6 +22,10 @@ last_input = 0
 #################
 ###   FUNCS   ###
 #################
+
+def log(text):
+    if debug:
+        print(text)
 
 def abs_path(relative_path):
     return os.path.join(sys.path[0], relative_path)
@@ -38,9 +43,7 @@ def init_files(directory):
 
 def init_vlc():
     global vlc
-    #global files
-    vlc = VLCPlayer(100)
-    #vlc.load_all(files)
+    vlc = VLCPlayer(75)
     vlc.set_callback_track_end(on_track_end)
 
 def init_inputs():
@@ -117,9 +120,9 @@ def btn_r_action(pin, event):
     if event != PushButton.PRESSED:
         return
     if vlc.next() >= 0:
-        print("next (" + str(vlc.get_current()) +  ")")
+        log("next (" + str(vlc.get_current()) +  ")")
     else:
-        print("n/a")
+        log("n/a")
 
 def btn_c_action(pin, event):
     global last_input
@@ -129,10 +132,10 @@ def btn_c_action(pin, event):
         return
     if vlc.is_playing():
         vlc.pause()
-        print("pausing")
+        log("pausing")
     else:
         vlc.play()
-        print("playing...")
+        log("playing...")
 
 def btn_l_action(pin, event):
     global last_input
@@ -141,40 +144,40 @@ def btn_l_action(pin, event):
     if event != PushButton.PRESSED:
         return
     if vlc.prev() >= 0:
-        print("prev (" + str(vlc.get_current()) + ")")
+        log("prev (" + str(vlc.get_current()) + ")")
     else:
-        print("n/a")
+        log("n/a")
 
 def btn_v_action(pin, event):
     global last_input
     last_input = time.time()
     global vlc
-    print("pos: " + str(vlc.get_position()) + " s")
+    log("pos: " + str(vlc.get_position()) + " s")
 
 def btn_p_action(pin, event):
     global last_input
     last_input = time.time()
     global vlc
     vlc.stop()
-    print("stopped.")
+    log("stopped.")
 
 def rot_v_action(event):
     global last_input
     last_input = time.time()
     global vlc
     if event == RotaryEncoder.CW:
-        print("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
+        log("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
     elif event == RotaryEncoder.CCW:
-        print("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
+        log("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
 
 def rot_p_action(event):
     global last_input
     last_input = time.time()
     global vlc
     if event == RotaryEncoder.CW:
-        print("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
+        log("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
     elif event == RotaryEncoder.CCW:
-        print("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
+        log("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
 
 def cleanup():
     global vlc
@@ -192,26 +195,27 @@ def cleanup():
 # Make sure CTRL+C will lead to a cleanup
 signal.signal(signal.SIGINT, signal_handler)
 
-print("Running from " + sys.path[0])
-print("Font path: " + abs_path("fonts"))
+if "-d" in sys.argv:
+    debug = True
 
-print("Initializing GPIO...")
+log("Initializing GPIO...")
 init_inputs()
-print("Initializing OLED display...")
+log("Initializing OLED display...")
 init_oled()
-print("Displaying loading screen...")
+log("Displaying loading screen...")
 display_loading_screen()
-print("Scanning for audio files...")
+log("Scanning for audio files...")
 init_files(abs_path("mp3"))
 
 if len(files) > 0:
-    print("Found " + str(len(files)) + " files.")
-    print("Initializing VLC...")
+    log("Found " + str(len(files)) + " files.")
+    log("Initializing VLC...")
     init_vlc()
-    print("Loading audio files...")
+    log("Loading audio files...")
     vlc.load_all(files)
     running = True
 
+log("Ready!")
 last_input = time.time()
 
 while running:
@@ -222,12 +226,12 @@ while running:
     else:
         oled.display()
     if proceed:
-        print("Track ended, scheduling next track")
+        log("Track ended, scheduling next track")
         proceed = False
         vlc.next()
         vlc.play()
     time.sleep(0.2)
 
-print("Shutting down, bye bye!")
+log("Shutting down, bye bye!")
 cleanup()
 sys.exit(0)
