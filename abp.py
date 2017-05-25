@@ -16,10 +16,14 @@ files = []
 oled = None
 running = False
 proceed = False
+last_input = 0 
 
 #################
 ###   FUNCS   ###
 #################
+
+def abs_path(relative_path):
+    return os.path.join(sys.path[0], relative_path)
 
 def signal_handler(signal, frame):
     global running
@@ -67,50 +71,39 @@ def init_inputs():
     rot_v = RotaryEncoder(gpio, rot_v_pin1, rot_v_pin2, rot_v_action, name="rot_v")    
 
 def init_oled():
-    self.oled = PlayerDisplay("./fonts/")
-
-def print_vlc_info():
-    global vlc
-    print("Number of files in playlist: " + str(vlc.num_files()))
-    print("Volume: " + str(vlc.get_volume()))
-    print("Track: " + str(vlc.get_current()) + "(" + str(vlc.get_duration()) + " s)")
-    print("File: " + vlc.get_filename())
-    print("Author: " + vlc.get_author())
-    print("Title: " + vlc.get_title())
-    if vlc.is_playing():
-        print("Status: playing")
-    else:
-        print("Status: stopped/paused")
+    global oled
+    oled = PlayerDisplay(abs_path("fonts"))
 
 def display_loading_screen():
-    if not self.oled:
+    global oled
+    if not oled:
         return
-    w = self.oled.get_num_chars_per_line()
-    h = self.oled.get_num_lines()
+    w = oled.get_num_chars_per_line()
+    h = oled.get_num_lines()
                               #####################
-    self.oled.draw_string(3, "       LOADING       ")
-    self.oled.display()
+    oled.draw_string(3, "       LOADING       ")
+    oled.display()
 
 def display_main_screen():
-    if not self.oled:
+    global oled
+    if not oled:
         return
-    w = self.oled.get_num_chars_per_line()
-    h = self.oled.get_num_lines()
+    w = oled.get_num_chars_per_line()
+    h = oled.get_num_lines()
 
-    status = "[stopped]"
+    status = "stopped"
     if vlc.is_playing():
-        status = "[playing]"
+        status = "playing"
 
-    self.oled.draw_string(0, vlc.get_author()[:w])
-    self.oled.draw_string(1, vlc.get_title()[:w])
-    self.oled.draw_string(2, "---------------------")
-    self.oled.draw_string(2, "File: " + str(vlc.get_current()) + " / " + str(vlc.num_files()))
-    self.oled.draw_string(3, "Time: " + str(vlc.get_position()) + " / " + str(vlc.get_duration()))
-    self.oled.draw_string(4, "---------------------")
-    self.oled.draw_string(5, status + " | Vol.: " + str(vlc.get_volume()))
-    self.oled.draw_string(6, "---------------------")
-    self.oled.draw_string(7, "SEEK  <<  |>  >>  VOL")
-    self.oled.display()
+    oled.draw_string(0, vlc.get_author()[:w])
+    oled.draw_string(1, vlc.get_title()[:w])
+    oled.draw_string(2, "---------------------")
+    oled.draw_string(3, "File: " + str(vlc.get_current() + 1) + " / " + str(vlc.num_files()))
+    oled.draw_string(4, "Time: " + str(vlc.get_position()) + " / " + str(vlc.get_duration()))
+    oled.draw_string(5, "Vol.: " + str(vlc.get_volume()) + " / 100")
+    oled.draw_string(6, "---------------------")
+    oled.draw_string(7, "     [ " + status + " ]     ")
+    oled.display()
 
 def on_track_end(event):
     # We can't call into libVLC from within the callback, so we'll take a detour
@@ -118,6 +111,8 @@ def on_track_end(event):
     proceed = True
 
 def btn_r_action(pin, event):
+    global last_input
+    last_input = time.time()
     global vlc
     if event != PushButton.PRESSED:
         return
@@ -127,6 +122,8 @@ def btn_r_action(pin, event):
         print("n/a")
 
 def btn_c_action(pin, event):
+    global last_input
+    last_input = time.time()
     global vlc
     if event != PushButton.PRESSED:
         return
@@ -138,6 +135,8 @@ def btn_c_action(pin, event):
         print("playing...")
 
 def btn_l_action(pin, event):
+    global last_input
+    last_input = time.time()
     global vlc
     if event != PushButton.PRESSED:
         return
@@ -147,38 +146,42 @@ def btn_l_action(pin, event):
         print("n/a")
 
 def btn_v_action(pin, event):
+    global last_input
+    last_input = time.time()
     global vlc
     print("pos: " + str(vlc.get_position()) + " s")
 
 def btn_p_action(pin, event):
+    global last_input
+    last_input = time.time()
     global vlc
     vlc.stop()
     print("stopped.")
 
-def rot_debug(event):
-    print("rot event: " + str(event))
-
 def rot_v_action(event):
+    global last_input
+    last_input = time.time()
     global vlc
     if event == RotaryEncoder.CW:
         print("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
     elif event == RotaryEncoder.CCW:
         print("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
-    else:
-        rot_debug(event)
 
 def rot_p_action(event):
+    global last_input
+    last_input = time.time()
     global vlc
     if event == RotaryEncoder.CW:
         print("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
     elif event == RotaryEncoder.CCW:
         print("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
-    else:
-        rot_debug(event)
 
 def cleanup():
     global vlc
+    global gpio
+    global oled
     gpio.cleanup()
+    oled.cleanup()
     vlc.cleanup()
 
 
@@ -189,6 +192,9 @@ def cleanup():
 # Make sure CTRL+C will lead to a cleanup
 signal.signal(signal.SIGINT, signal_handler)
 
+print("Running from " + sys.path[0])
+print("Font path: " + abs_path("fonts"))
+
 print("Initializing GPIO...")
 init_inputs()
 print("Initializing OLED display...")
@@ -196,7 +202,7 @@ init_oled()
 print("Displaying loading screen...")
 display_loading_screen()
 print("Scanning for audio files...")
-init_files()
+init_files(abs_path("mp3"))
 
 if len(files) > 0:
     print("Found " + str(len(files)) + " files.")
@@ -206,14 +212,21 @@ if len(files) > 0:
     vlc.load_all(files)
     running = True
 
+last_input = time.time()
+
 while running:
-    display_main_screen()
+    oled.clear()
+    now = time.time()
+    if (now - last_input) < 10:
+        display_main_screen()
+    else:
+        oled.display()
     if proceed:
         print("Track ended, scheduling next track")
         proceed = False
         vlc.next()
         vlc.play()
-    time.sleep(1)
+    time.sleep(0.2)
 
 print("Shutting down, bye bye!")
 cleanup()

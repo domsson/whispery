@@ -1,3 +1,4 @@
+import os
 from display import Display
 
 import Adafruit_GPIO.SPI as SPI
@@ -31,7 +32,8 @@ class PlayerDisplay(Display):
         self.image = Image.new('1', (self.width, self.height)) # 1 = 1-bit color
         self.draw = ImageDraw.Draw(self.image)
         self.draw.rectangle((0,0,self.width,self.height), outline=0, fill=0) # TODO is this needed?
-        self.font = ImageFont.truetype(font_dir + PlayerDisplay.FONT_FILE, PlayerDisplay.FONT_SIZE)
+        font_file = os.path.join(font_dir, PlayerDisplay.FONT_FILE)
+        self.font = ImageFont.truetype(font_file, PlayerDisplay.FONT_SIZE)
 
     # Return display width in pixels
     def get_width(self):
@@ -65,12 +67,14 @@ class PlayerDisplay(Display):
         self.draw.text((x, y), char[:1], font=self.font, fill=255)
 
     def clear(self):
-        self.oled.clear()
-        self.oled.display()
+        self.draw.rectangle((0,0,self.width,self.height),outline=0,fill=0)
+        #self.oled.clear()
+        #self.oled.display()
 
     def display(self):
         self.oled.image(self.image)
         self.oled.display()
 
     def cleanup(self):
-        self.clear()
+        self.oled.clear()
+        self.oled.display()
