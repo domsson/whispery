@@ -207,7 +207,6 @@ class VLCPlayer(AudioPlayer):
     # Return the number of the new file or -1 if there is no next.
     def next(self):
         if (self.current + 1) >= self.num_files():
-            print("next() failed")
             return -1
 
         was_playing = self.player.is_playing()
