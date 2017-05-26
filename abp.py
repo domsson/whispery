@@ -17,8 +17,15 @@ oled = None
 debug = False
 running = False
 proceed = False
+loading = False
 last_input = 0 
 exit_menu = False
+
+AUDIO_AUTO = 0
+AUDIO_JACK = 1
+AUDIO_HDMI = 2
+
+audio_device = AUDIO_AUTO
 
 SHUTDOWN = -2
 REBOOT = -1
@@ -40,6 +47,23 @@ def abs_path(relative_path):
 def signal_handler(signal, frame):
     global running
     running = False
+
+def get_media_path():
+    udisks_cfg = abs_path("udisks-glue.conf")
+    os.system("udisks-glue -c " + udisks_cfg)
+    mount_dir = "/media"
+    for d in os.listdir(mount_dir):
+        abs_dir = os.path.join(mount_dir, d)
+        if os.path.isdir(abs_dir):
+            if contains_audio_files(abs_dir):
+                return abs_dir
+    return abs_path("mp3")
+
+def contains_audio_files(directory):
+    for f in os.listdir(directory):
+        if f.endswith(".mp3") or f.endswith(".ogg"):
+            return True
+    return False
 
 def init_files(directory):
     global files
@@ -202,6 +226,9 @@ def btn_v_action(pin, event):
     global vlc
 
     last_input = time.time()
+    if event != PushButton.PRESSED:
+        return
+
     exit_menu = True
     log("pos: " + str(vlc.get_position()) + " s")
 
@@ -211,11 +238,15 @@ def btn_p_action(pin, event):
         return
 
     global last_input
-    global vlc
-
     last_input = time.time()
-    vlc.stop()
-    log("stopped.")
+    if event != PushButton.PRESSED:
+        return
+    if exit_menu:
+        reload()
+        return
+    else:
+        log("Toggling audio output device")
+        toggle_audio_jack()
 
 def rot_v_action(event):
     global running
@@ -243,6 +274,48 @@ def rot_p_action(event):
         log("pos: " + str(vlc.seek( 30)) + " / " + str(vlc.get_duration()))
     elif event == RotaryEncoder.CCW:
         log("pos: " + str(vlc.seek(-30)) + " / " + str(vlc.get_duration()))
+
+def toggle_audio_jack():
+    global audio_device
+    if audio_device == AUDIO_AUTO:
+        set_audio_out(AUDIO_JACK)
+    else:
+        set_audio_out(AUDIO_AUTO)
+
+def set_audio_out(audio):
+    global audio_device
+    selection = None
+    
+    if audio == AUDIO_AUTO:
+        selection = "auto select"
+    elif audio == AUDIO_JACK:
+        selection = "headphone jack"
+    elif audio == AUDIO_HDMI:
+        selection = "HDMI"
+    
+    if selection:
+        log("Setting audio output to " + selection)
+        os.system("amixer cset -q numid=3 " + str(audio))
+        audio_device = audio
+    else:
+        log("Tried to set audio output to invalid value, did nothing")
+
+def reload():
+    global vlc
+    global files
+    global loading
+    global exit_menu
+
+    loading = True
+    exit_menu = False
+    vlc.stop()
+    vlc.cleanup()
+    vlc = None
+
+    init_files(abs_path(get_media_path()))
+    init_vlc()
+    vlc.load_all(files)
+    loading = False
 
 def cleanup():
     global vlc
@@ -276,14 +349,20 @@ signal.signal(signal.SIGINT, signal_handler)
 if "-d" in sys.argv:
     debug = True
 
+loading = True
+
+log("Setting audio output to 'auto'...")
+set_audio_out(AUDIO_AUTO)
 log("Initializing GPIO...")
 init_inputs()
 log("Initializing OLED display...")
 init_oled()
 log("Displaying loading screen...")
 display_loading_screen()
+log("Scanning for mounted media...")
+media_path = get_media_path()
 log("Scanning for audio files...")
-init_files(abs_path("mp3"))
+init_files(abs_path(media_path))
 
 if len(files) > 0:
     log("Found " + str(len(files)) + " files.")
@@ -295,6 +374,7 @@ if len(files) > 0:
 
 log("Ready!")
 last_input = time.time()
+loading = False
 
 while running:
     oled.clear()
@@ -302,6 +382,8 @@ while running:
     if (now - last_input) < 10:
         if exit_menu:
             display_exit_screen()
+        elif loading:
+            display_loading_screen()
         else:
             display_main_screen()
     else:
