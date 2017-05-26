@@ -18,6 +18,13 @@ debug = False
 running = False
 proceed = False
 last_input = 0 
+exit_menu = False
+
+SHUTDOWN = -2
+REBOOT = -1
+EXIT = 0
+
+on_exit = EXIT
 
 #################
 ###   FUNCS   ###
@@ -108,16 +115,36 @@ def display_main_screen():
     oled.draw_string(7, "     [ " + status + " ]     ")
     oled.display()
 
+def display_exit_screen():
+    global oled
+    if not oled:
+        return
+
+    oled.draw_string(2, "---------------------")
+    oled.draw_string(4, "      SHUTDOWN?      ")
+    oled.draw_string(6, "---------------------")
+    oled.draw_string(7, "[yes]  [reboot]  [no]")
+    oled.display()
+
 def on_track_end(event):
     # We can't call into libVLC from within the callback, so we'll take a detour
     global proceed
     proceed = True
 
 def btn_r_action(pin, event):
+    global running
+    if not running:
+        return
+
     global last_input
-    last_input = time.time()
+    global exit_menu
     global vlc
+
+    last_input = time.time()
     if event != PushButton.PRESSED:
+        return
+    if exit_menu:
+        exit_menu = False
         return
     if vlc.next() >= 0:
         log("next (" + str(vlc.get_current()) +  ")")
@@ -125,10 +152,18 @@ def btn_r_action(pin, event):
         log("n/a")
 
 def btn_c_action(pin, event):
+    global running
+    if not running:
+        return
+
     global last_input
-    last_input = time.time()
     global vlc
+    
+    last_input = time.time()
     if event != PushButton.PRESSED:
+        return
+    if exit_menu:
+        reboot()
         return
     if vlc.is_playing():
         vlc.pause()
@@ -138,10 +173,19 @@ def btn_c_action(pin, event):
         log("playing...")
 
 def btn_l_action(pin, event):
+    global running
+    if not running:
+        return
+
     global last_input
-    last_input = time.time()
+    global exit_menu
     global vlc
+
+    last_input = time.time()
     if event != PushButton.PRESSED:
+        return
+    if exit_menu:
+        shutdown()
         return
     if vlc.prev() >= 0:
         log("prev (" + str(vlc.get_current()) + ")")
@@ -149,28 +193,49 @@ def btn_l_action(pin, event):
         log("n/a")
 
 def btn_v_action(pin, event):
+    global running
+    if not running:
+        return
+
     global last_input
-    last_input = time.time()
+    global exit_menu
     global vlc
+
+    last_input = time.time()
+    exit_menu = True
     log("pos: " + str(vlc.get_position()) + " s")
 
 def btn_p_action(pin, event):
+    global running
+    if not running:
+        return
+
     global last_input
-    last_input = time.time()
     global vlc
+
+    last_input = time.time()
     vlc.stop()
     log("stopped.")
 
 def rot_v_action(event):
+    global running
+    if not running:
+        return
+    
     global last_input
-    last_input = time.time()
     global vlc
+    
+    last_input = time.time()
     if event == RotaryEncoder.CW:
         log("vol = " + str(vlc.set_volume(vlc.get_volume() + 1)))
     elif event == RotaryEncoder.CCW:
         log("vol = " + str(vlc.set_volume(vlc.get_volume() - 1)))
 
 def rot_p_action(event):
+    global running
+    if not running:
+        reutnr
+    
     global last_input
     last_input = time.time()
     global vlc
@@ -183,10 +248,23 @@ def cleanup():
     global vlc
     global gpio
     global oled
-    gpio.cleanup()
     oled.cleanup()
+    gpio.cleanup()
     vlc.cleanup()
 
+def reboot():
+    global running
+    global on_exit
+    global REBOOT
+    on_exit = REBOOT
+    running = False
+
+def shutdown():
+    global running
+    global on_exit
+    global SHUTDOWN
+    on_exit = SHUTDOWN
+    running = False
 
 ################
 ###   MAIN   ###
@@ -222,7 +300,10 @@ while running:
     oled.clear()
     now = time.time()
     if (now - last_input) < 10:
-        display_main_screen()
+        if exit_menu:
+            display_exit_screen()
+        else:
+            display_main_screen()
     else:
         oled.display()
     if proceed:
@@ -230,8 +311,19 @@ while running:
         proceed = False
         vlc.next()
         vlc.play()
-    time.sleep(0.2)
+    time.sleep(0.1)
 
-log("Shutting down, bye bye!")
 cleanup()
-sys.exit(0)
+time.sleep(1)
+
+if on_exit == REBOOT:
+    log("Rebooting device, bye!")
+    os.system("sudo shutdown -r now")
+    sys.exit(0)
+elif on_exit == SHUTDOWN:
+    log("Shutting down device, bye!")
+    os.system("sudo shutdown -h now")
+    sys.exit(0)
+else:
+    log("Exiting ABP, bye!")
+    sys.exit(0)

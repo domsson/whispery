@@ -68,13 +68,12 @@ class PlayerDisplay(Display):
 
     def clear(self):
         self.draw.rectangle((0,0,self.width,self.height),outline=0,fill=0)
-        #self.oled.clear()
-        #self.oled.display()
 
     def display(self):
         self.oled.image(self.image)
         self.oled.display()
 
     def cleanup(self):
+        self.clear()
+        self.display()
         self.oled.clear()
-        self.oled.display()
