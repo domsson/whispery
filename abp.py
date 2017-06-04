@@ -49,8 +49,10 @@ def signal_handler(signal, frame):
     running = False
 
 def get_media_path():
-    udisks_cfg = abs_path("udisks-glue.conf")
-    os.system("udisks-glue -c " + udisks_cfg)
+    #udisks_cfg = abs_path("udisks-glue.conf")
+    #os.system("udisks-glue -c " + udisks_cfg)
+    os.system("udisks-glue")
+    time.sleep(3)
     mount_dir = "/media"
     for d in os.listdir(mount_dir):
         abs_dir = os.path.join(mount_dir, d)
