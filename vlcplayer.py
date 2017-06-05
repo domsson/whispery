@@ -20,6 +20,7 @@ class VLCPlayer(AudioPlayer):
         self.player = self.instance.media_player_new()
         self.media = []
         self.current = -1
+        self.callback_track_end = None
         if volume:
             self.volume_ini = volume
         else:
@@ -53,6 +54,8 @@ class VLCPlayer(AudioPlayer):
         if index < 0 or index >= self.num_files():
             raise IndexError((self.__class__.__name__) + ".init_media()")
         self.player.set_media(self.media[index])
+        if self.callback_track_end:
+            self.player.event_manager().event_attach(vlc.EventType.MediaPlayerEndReached, self.callback_track_end)
         self.current = index
 
     # Add a given file to the list of files
@@ -60,8 +63,13 @@ class VLCPlayer(AudioPlayer):
     def add(self, mrl):
         new_media = self.instance.media_new(mrl)
         self.media.append(new_media)
+        self.media[-1].event_manager().event_attach(vlc.EventType.MediaStateChanged, self.on_media_state_change, len(self.media)-1)
         self.media[-1].parse() # Start parsing meta data...
         return len(self.media)
+
+    def on_media_state_change(self, event, index):
+        state = self.media[index].get_state()
+        print("state of file #" + str(index) + ": " + str(state))
 
     # Add the given files to the list of files
     # Returns the new number of files in the file list
@@ -240,8 +248,8 @@ class VLCPlayer(AudioPlayer):
         self.player.stop()
 
     def set_callback_track_end(self, callback):
-
-        self.player.event_manager().event_attach(vlc.EventType.MediaPlayerEndReached, callback)
+        self.callback_track_end = callback
+        #self.player.event_manager().event_attach(vlc.EventType.MediaPlayerEndReached, callback)
 
     # Halt playback, free all resources, clean up after yourself
     def cleanup(self):

@@ -154,6 +154,7 @@ def display_exit_screen():
 
 def on_track_end(event):
     # We can't call into libVLC from within the callback, so we'll take a detour
+    log("Track ended, scheduling next track")
     global proceed
     proceed = True
 
