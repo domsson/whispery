@@ -149,7 +149,7 @@ def display_exit_screen():
     oled.draw_string(2, "---------------------")
     oled.draw_string(4, "      SHUTDOWN?      ")
     oled.draw_string(6, "---------------------")
-    oled.draw_string(7, "[yes]  [reboot]  [no]")
+    oled.draw_string(7, "[yes] [restart]  [no]")
     oled.display()
 
 def on_track_end(event):
@@ -402,8 +402,9 @@ cleanup()
 time.sleep(1)
 
 if on_exit == REBOOT:
-    log("Rebooting device, bye!")
-    os.system("sudo shutdown -r now")
+    #log("Rebooting device, bye!")
+    #os.system("sudo shutdown -r now")
+    os.system("/home/pi/workspace/whispery/whispery.py &")
     sys.exit(0)
 elif on_exit == SHUTDOWN:
     log("Shutting down device, bye!")

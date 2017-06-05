@@ -63,13 +63,13 @@ class VLCPlayer(AudioPlayer):
     def add(self, mrl):
         new_media = self.instance.media_new(mrl)
         self.media.append(new_media)
-        self.media[-1].event_manager().event_attach(vlc.EventType.MediaStateChanged, self.on_media_state_change, len(self.media)-1)
+        #self.media[-1].event_manager().event_attach(vlc.EventType.MediaStateChanged, self.on_media_state_change, len(self.media)-1)
         self.media[-1].parse() # Start parsing meta data...
         return len(self.media)
 
-    def on_media_state_change(self, event, index):
-        state = self.media[index].get_state()
-        print("state of file #" + str(index) + ": " + str(state))
+    #def on_media_state_change(self, event, index):
+    #    state = self.media[index].get_state()
+    #    print("state of file #" + str(index) + ": " + str(state))
 
     # Add the given files to the list of files
     # Returns the new number of files in the file list
