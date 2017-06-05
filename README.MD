@@ -25,3 +25,7 @@ Also, the Rasperry will, by default, send audio through HDMI if there is a devic
 
 Where `0` is `auto`, `1` is `jack` and `2` is `hdmi`.
 
+To start _whispery_ on boot, it is recommended to use `crontab` with the regular user (`pi`), as using `rc.local` can lead to permission issues in combination with `udisks-glue`.
+
+    contab -e
+    @reboot /home/pi/workspace/whispery/whispery.py &
