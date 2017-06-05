@@ -1,8 +1,6 @@
-class PushButton():
+from inputevent import InputEvent
 
-    PRESSED  = -1 # rising edge
-    RELEASED =  1 # falling edge
-    NONE     =  0
+class PushButton():
 
     def __init__(self, gpio, pin, bnc, callback, name=None):
         self.gpio = gpio
@@ -19,9 +17,9 @@ class PushButton():
 
     # Call back routine called by switch events
     def button_event(self, pin):
-        event = self.NONE
+        event = InputEvent(event_type=InputEvent.NONE, input_name=self.name, input_pin1=self.pin, input_pin2=None)
         if self.gpio.input(pin):
-            event = self.RELEASED # RISING edge detected
+            event.event_type = InputEvent.BUTTON_RELEASED # RISING edge detected
         else:
-            event = self.PRESSED # FALLING edge detected
-        self.callback(self.pin, event)
+            event.event_type = InputEvent.BUTTON_PRESSED # FALLING edge detected
+        self.callback(event)

@@ -5,9 +5,10 @@ import sys
 import vlc
 import time
 import signal 
-import RPi.GPIO as gpio 
+import RPi.GPIO as gpio
 from rotaryencoder import RotaryEncoder
 from pushbutton import PushButton
+from inputevent import InputEvent
 from vlcplayer import VLCPlayer
 from playerdisplay import PlayerDisplay
 
@@ -168,7 +169,7 @@ def btn_r_action(pin, event):
     global vlc
 
     last_input = time.time()
-    if event != PushButton.PRESSED:
+    if event.event_type != InputEvent.BUTTON_PRESSED:
         return
     if exit_menu:
         exit_menu = False
@@ -187,7 +188,7 @@ def btn_c_action(pin, event):
     global vlc
     
     last_input = time.time()
-    if event != PushButton.PRESSED:
+    if event.event_type != InputEvent.BUTTON_PRESSED:
         return
     if exit_menu:
         reboot()
@@ -209,7 +210,7 @@ def btn_l_action(pin, event):
     global vlc
 
     last_input = time.time()
-    if event != PushButton.PRESSED:
+    if event.event_type != InputEvent.BUTTON_PRESSED:
         return
     if exit_menu:
         shutdown()
@@ -229,7 +230,7 @@ def btn_v_action(pin, event):
     global vlc
 
     last_input = time.time()
-    if event != PushButton.PRESSED:
+    if event.event_type != InputEvent.BUTTON_PRESSED:
         return
 
     exit_menu = True
@@ -242,7 +243,7 @@ def btn_p_action(pin, event):
 
     global last_input
     last_input = time.time()
-    if event != PushButton.PRESSED:
+    if event.event_type != InputEvent.BUTTON_PRESSED:
         return
     if exit_menu:
         reload()

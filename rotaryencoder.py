@@ -1,9 +1,11 @@
 import math
+from inputevent import InputEvent
 
 class RotaryEncoder():
 
-    CW  =  1
-    CCW = -1
+    #CCW  = -1
+    #NONE =  0
+    #CW   =  1
 
     # Initialise rotary encoder object
     def __init__(self, gpio, pin_a, pin_b, callback, name=None):
@@ -49,4 +51,9 @@ class RotaryEncoder():
 
             if self.steps >= 4:
                 self.steps = 0
-                self.callback(self.last_delta)
+                event = InputEvent(event_type=InputEvent.NONE, input_name=self.name, input_pin1=self.pin_a, input_pin2=self.pin_b)
+                if self.last_delta = -1:
+                    event.event_type = InputEvent.ROTATION_CCW
+                elif self.last_delta = 1:
+                    event.event_type = InputEvent.ROTATION_CW
+                self.callback(event)
